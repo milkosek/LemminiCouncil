@@ -13,6 +13,11 @@
     "useDefineForClassFields": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "noImplicitAny": false,
+    "allowJs": true,
+    "typeRoots": [
+      "node_modules/@types",
+    ],
     "types": [
       "webpack-env",
       "jest"
