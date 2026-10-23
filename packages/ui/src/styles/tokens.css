@@ -1,0 +1,86 @@
+/*
+ * Design tokens.
+ *
+ * "The Chamber at Night" is the default theme. "The Chamber by Day" is opt-in
+ * and is applied with <html data-theme="day">.
+ *
+ * All text/background pairs meet WCAG AA (4.5:1) in both themes.
+ * Re-check contrast whenever a value changes.
+ */
+
+:root,
+:root[data-theme='night'] {
+  color-scheme: dark;
+
+  --bg: #14110f;
+  --surface: #1d1915;
+  --text: #e9e1d0;
+  --text-muted: #a39a88;
+  --accent: #d65a52;
+  --accent-strong: #e2726b;
+  --on-accent: #14110f;
+  --brass: #c9a45c;
+  --border: #2e2822;
+  --selection: rgb(194 65 58 / 0.35);
+}
+
+:root[data-theme='day'] {
+  color-scheme: light;
+
+  --bg: #f4ecdc;
+  --surface: #ebe1cc;
+  --text: #1e1a16;
+  --text-muted: #5c544a;
+  --accent: #9e2b25;
+  --accent-strong: #7e1f1a;
+  --on-accent: #ffffff;
+  --brass: #76591f;
+  --border: #d6c8ab;
+  --selection: rgb(158 43 37 / 0.2);
+}
+
+:root {
+  /* Typography */
+  --font-display: 'Cormorant Garamond', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-body: 'Source Serif 4 Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --text-sm: 0.875rem;
+  --text-base: clamp(1.125rem, 1rem + 0.35vw, 1.3125rem); /* 18px on phones → 21px on wide screens */
+  --text-lg: 1.375rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.25rem;
+  --text-3xl: clamp(2.25rem, 1.5rem + 3vw, 4rem);
+
+  --leading-body: 1.65;
+  --leading-tight: 1.15;
+
+  /* Layout */
+  /* Reading column: about 70 characters per line, the comfortable range for long text. */
+  --measure: 70ch;
+  /* Wider column that code blocks, tables and showcases can break out into. */
+  --wide-width: 64rem;
+  --page-width: 72rem;
+  --gutter: 1rem;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  --radius: 4px;
+  --rule: 1px solid var(--border);
+  --focus-ring: 2px solid var(--brass);
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --gutter: 1.5rem;
+  }
+}

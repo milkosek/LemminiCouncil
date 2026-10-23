@@ -15,7 +15,7 @@
 
 | Concern | Choice | Notes |
 | --- | --- | --- |
-| Site framework | Astro | Content collections, MDX, sitemap, RSS |
+| Site framework | Astro 7 | Content collections, MDX, sitemap, RSS |
 | Interactive UI | Vue 3 via `@astrojs/vue` | Composition API, `<script setup>`, TypeScript |
 | Language | TypeScript | Strict mode |
 | Package manager | pnpm (workspaces) | Monorepo |

@@ -1,0 +1,101 @@
+---
+import ThemeToggle from '@lemmini/ui/components/ThemeToggle.vue';
+import { nav, site } from '../site.config';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/" aria-label={`${site.title}, home`}>
+      <img class="brand__seal" src="/favicon.svg" alt="" width="32" height="32" />
+      <span class="brand__name">{site.title}</span>
+    </a>
+
+    <nav aria-label="Main">
+      <ul class="site-nav">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <ThemeToggle client:load />
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: var(--rule);
+  }
+
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-8);
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: var(--space-4) var(--gutter);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-right: auto;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .brand__name {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+  }
+
+  .site-nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 1.1rem;
+  }
+
+  .site-nav a:hover,
+  .site-nav a[aria-current='page'] {
+    color: var(--text);
+  }
+
+  .site-nav a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 0.4em;
+  }
+
+  @media (max-width: 40rem) {
+    .site-header nav {
+      order: 3;
+      width: 100%;
+    }
+  }
+</style>

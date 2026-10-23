@@ -1,0 +1,87 @@
+---
+import FormattedDate from '../components/FormattedDate.astro';
+import { readingTime, tagSlug, type Post } from '../lib/posts';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, published, updated, tags, series, draft } = post.data;
+---
+
+<BaseLayout title={title} description={description} type="article" publishedTime={published}>
+  <article class="post" data-pagefind-body>
+    <header class="post__header">
+      {series && <p class="eyebrow">{series}</p>}
+      <h1 data-pagefind-meta="title">{title}</h1>
+      <p class="lede">{description}</p>
+      <p class="post__meta" data-pagefind-ignore>
+        <FormattedDate date={published} />
+        {
+          updated && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>
+                Updated <FormattedDate date={updated} />
+              </span>
+            </>
+          )
+        }
+        <span aria-hidden="true">·</span>
+        <span>{readingTime(post)} min read</span>
+        {draft && <strong class="post__draft">Draft: not published</strong>}
+      </p>
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    {
+      tags.length > 0 && (
+        <footer class="post__footer" data-pagefind-ignore>
+          <h2 class="visually-hidden">Tags</h2>
+          <ul class="tag-list">
+            {tags.map((tag) => (
+              <li>
+                <a class="tag" href={`/tags/${tagSlug(tag)}/`} data-pagefind-filter="tag">
+                  {tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </footer>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .post__header {
+    margin-bottom: var(--space-12);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--brass);
+  }
+
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+
+  .post__draft {
+    color: var(--accent);
+  }
+
+  .post__footer {
+    margin-top: var(--space-12);
+    padding-top: var(--space-6);
+    border-top: var(--rule);
+  }
+</style>

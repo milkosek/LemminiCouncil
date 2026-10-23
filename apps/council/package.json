@@ -1,0 +1,30 @@
+{
+  "name": "@lemmini/council",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "lemminicouncil.org: blog, about and portfolio",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.0.0",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/vue": "^7.0.0",
+    "@lemmini/ui": "workspace:*",
+    "astro": "^7.3.0",
+    "sharp": "^0.34.0",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@lemmini/config": "workspace:*",
+    "pagefind": "^1.3.0",
+    "typescript": "^5.9.0"
+  }
+}

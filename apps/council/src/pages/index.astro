@@ -1,0 +1,50 @@
+---
+import PostList from '../components/PostList.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts } from '../lib/posts';
+import { site } from '../site.config';
+
+const posts = (await getPublishedPosts()).slice(0, 5);
+---
+
+<BaseLayout>
+  <section class="hero breakout">
+    <p class="eyebrow">The Council is in session</p>
+    <h1 class="hero__title">{site.tagline}</h1>
+    <p class="lede">{site.description}</p>
+  </section>
+
+  <h2 class="section-rule">Latest</h2>
+  <PostList posts={posts} />
+
+  {
+    posts.length > 0 && (
+      <p class="more">
+        <a href="/posts/">All posts →</a>
+      </p>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: var(--space-8) 0 var(--space-4);
+    text-align: center;
+  }
+
+  .hero__title {
+    margin-bottom: var(--space-6);
+    text-wrap: balance;
+  }
+
+  .hero .lede {
+    max-width: var(--measure);
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+
+  .more {
+    margin-top: var(--space-8);
+    font-family: var(--font-ui);
+  }
+</style>

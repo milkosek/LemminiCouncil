@@ -19,31 +19,37 @@ humour, but the words do the work.
 - The site starts in dark mode, regardless of the OS setting, until the visitor chooses otherwise.
 - The theme is set before first paint (inline script in `<head>`) to avoid a flash of the wrong theme.
 
-## Palette (starting point)
+## Palette
 
-Tokens are CSS custom properties in `packages/ui`. These values are placeholders until tested for
-contrast.
+Tokens are CSS custom properties in `packages/ui/src/styles/tokens.css`. Every text colour below
+meets WCAG AA (4.5:1) against `--bg` in its theme. Re-check whenever a value changes.
 
 | Token | Night (default) | Day | Role |
 | --- | --- | --- | --- |
 | `--bg` | `#14110f` deep ink-brown | `#f4ecdc` parchment | Page background |
 | `--surface` | `#1d1915` | `#ebe1cc` | Cards, code blocks |
-| `--text` | `#e9e1d0` candle-lit parchment | `#1e1a16` ink | Body text |
-| `--text-muted` | `#a39a88` | `#5c544a` | Meta, captions |
-| `--accent` | `#c2413a` wax-seal red | `#9e2b25` | Links, highlights, seals |
-| `--brass` | `#c9a45c` | `#8a6a2a` | Rules, ornaments, focus rings |
+| `--text` | `#e9e1d0` candle-lit parchment | `#1e1a16` ink | Body text (14.5:1 / 14.7:1) |
+| `--text-muted` | `#a39a88` | `#5c544a` | Meta, captions (6.8:1 / 6.3:1) |
+| `--accent` | `#d65a52` wax-seal red | `#9e2b25` | Links, highlights, seals (4.9:1 / 6.3:1) |
+| `--on-accent` | `#14110f` | `#ffffff` | Text on accent-coloured buttons |
+| `--brass` | `#c9a45c` | `#76591f` | Rules, ornaments, focus rings, small labels (8.0:1 / 5.6:1) |
 | `--border` | `#2e2822` | `#d6c8ab` | Dividers |
 
-There should be one accent colour (wax-seal red), used sparingly. Brass is for ornaments, never body
-text.
+There should be one accent colour (wax-seal red), used sparingly. Brass is for ornaments and small
+labels, never body text.
 
 ## Typography
 
-- **Headings:** a characterful serif with high contrast, for a "proclamation" feel.
-- **Body:** a highly readable text serif, roughly 18–20px, with a measure of about 65–70 characters.
-- **UI and meta:** a quiet sans-serif or a small-caps variant of the body face.
-- **Code:** a monospace with clear `0/O` and `1/l` distinction.
-- All fonts are self-hosted (no Google Fonts requests at runtime) and subset where possible.
+All fonts are self-hosted through Fontsource packages, so no request ever goes to a font CDN.
+
+| Role | Font | Notes |
+| --- | --- | --- |
+| Headings | Cormorant Garamond (600, 700) | High-contrast serif with a "proclamation" feel |
+| Body | Source Serif 4 (variable) | Highly readable text serif, 19px, measure about 68 characters |
+| UI and meta | System sans-serif, often in small caps | Navigation, dates, labels |
+| Code | JetBrains Mono (variable) | Clear `0/O` and `1/l` distinction |
+
+Code blocks use the `rose-pine` Shiki theme in both modes.
 
 ## Motifs
 

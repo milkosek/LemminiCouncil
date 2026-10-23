@@ -1,0 +1,61 @@
+---
+title: Style Guide
+description: Every element a post can use, for checking the design in both themes. Stays a draft forever.
+published: 2026-10-22
+tags: [meta]
+draft: true
+---
+
+{/* Embed components can be imported in any .mdx post: */}
+import YouTubeEmbed from '@lemmini/ui/components/YouTubeEmbed.astro';
+import SpotifyEmbed from '@lemmini/ui/components/SpotifyEmbed.astro';
+
+This draft exists to check typography and components. It never ships. Body text is set in a text
+serif at a comfortable measure, with [links in wax-seal red](/posts/) and `inline code`.
+
+## A second-level heading
+
+Paragraphs should breathe. Here is a list:
+
+- First point, short
+- Second point, which runs a little longer to show how wrapped lines sit under the first line
+- Third point
+
+1. Ordered lists
+2. Work too
+
+### A third-level heading
+
+> A blockquote, for quoting someone the Council is responding to. It is set in italics with a brass
+> rule on the left.
+
+```ts
+// Code blocks use a dark theme in both modes.
+export function shouldWeShip(legal: boolean, right: boolean): boolean {
+  return legal && right;
+}
+```
+
+---
+
+| Question | Answer |
+| --- | --- |
+| Is it legal? | Probably |
+| Is it right? | That's the post |
+
+## Embeds
+
+Both players stay off until clicked. The title and preview image are fetched when the page is
+built (or rendered by `pnpm dev`).
+
+<YouTubeEmbed id="6IFVTcM28KA" />
+<SpotifyEmbed url="https://open.spotify.com/track/3GR6MLpg7XXplpaXYyzoXa" />
+
+### Spotify sizes
+
+The same track as a large player (`size="large"`, 352px):
+
+<SpotifyEmbed url="https://open.spotify.com/track/3GR6MLpg7XXplpaXYyzoXa" size="large" />
+
+A custom height (`size={600}`) only helps albums and playlists, where a taller player shows more
+of the track list. A single track never grows past the large layout.

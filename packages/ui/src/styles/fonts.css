@@ -1,0 +1,9 @@
+/*
+ * Self-hosted fonts. Fontsource bundles the files into the build,
+ * so no request ever goes to a font CDN.
+ */
+@import '@fontsource-variable/source-serif-4/wght.css';
+@import '@fontsource-variable/source-serif-4/wght-italic.css';
+@import '@fontsource/cormorant-garamond/600.css';
+@import '@fontsource/cormorant-garamond/700.css';
+@import '@fontsource-variable/jetbrains-mono';

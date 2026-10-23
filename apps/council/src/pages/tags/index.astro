@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, groupByTag } from '../../lib/posts';
+
+const tags = groupByTag(await getPublishedPosts());
+---
+
+<BaseLayout title="Tags" description="Posts by topic.">
+  <h1>Tags</h1>
+  {
+    tags.length === 0 ? (
+      <p class="empty-state">No tags yet.</p>
+    ) : (
+      <ul class="tag-list tags-page">
+        {tags.map(({ tag, slug, posts }) => (
+          <li>
+            <a class="tag" href={`/tags/${slug}/`}>
+              {tag} <span class="count">({posts.length})</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .tags-page {
+    gap: var(--space-3);
+  }
+  .tags-page .tag {
+    font-size: 1rem;
+  }
+  .count {
+    opacity: 0.7;
+  }
+</style>

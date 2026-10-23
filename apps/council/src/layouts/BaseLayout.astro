@@ -1,0 +1,71 @@
+---
+import '@lemmini/ui/styles/index.css';
+import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { site } from '../site.config';
+
+interface Props {
+  /** Page title. Omit on the home page to use the site title alone. */
+  title?: string;
+  description?: string;
+  /** Open Graph type. */
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+  noindex?: boolean;
+}
+
+const { title, description = site.description, type = 'website', publishedTime, noindex } =
+  Astro.props;
+
+const fullTitle = title ? `${title} · ${site.title}` : `${site.title} · ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang={site.locale} data-theme="night">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <!-- Night is the default. Apply a saved "day" choice before first paint. -->
+    <script is:inline>
+      try {
+        if (localStorage.getItem('lc-theme') === 'day') {
+          document.documentElement.dataset.theme = 'day';
+        }
+      } catch {
+        // Storage unavailable (private mode, blocked site data): stay on night.
+      }
+    </script>
+    <meta name="theme-color" content="#14110f" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={site.title} href="/rss.xml" />
+
+    <meta property="og:site_name" content={site.title} />
+    <meta property="og:title" content={title ?? site.title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    {
+      publishedTime && (
+        <meta property="article:published_time" content={publishedTime.toISOString()} />
+      )
+    }
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader />
+    <main id="main" class="page">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

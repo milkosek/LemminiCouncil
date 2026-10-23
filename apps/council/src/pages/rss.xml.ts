@@ -1,0 +1,22 @@
+import rss from '@astrojs/rss';
+import type { APIContext } from 'astro';
+import { getPublishedPosts, postUrl } from '../lib/posts';
+import { site } from '../site.config';
+
+export async function GET(context: APIContext) {
+  const posts = await getPublishedPosts();
+
+  return rss({
+    title: site.title,
+    description: site.description,
+    site: context.site ?? 'https://lemminicouncil.org',
+    items: posts.map((post) => ({
+      title: post.data.title,
+      description: post.data.description,
+      pubDate: post.data.published,
+      link: postUrl(post),
+      categories: post.data.tags,
+    })),
+    customData: `<language>${site.locale}</language>`,
+  });
+}

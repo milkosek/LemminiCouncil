@@ -1,0 +1,131 @@
+---
+import FormattedDate from '../components/FormattedDate.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getRecentRepos } from '../lib/github';
+import { site } from '../site.config';
+
+const { github, linkedin } = site.social;
+const repos = await getRecentRepos(github, {
+  count: site.portfolio.maxShownReposCount,
+  exclude: site.portfolio.exclude,
+});
+---
+
+<BaseLayout title="About" description={`About me and the Lemmini Council.`}>
+  <div class="prose">
+    <p class="eyebrow">About</p>
+    <h1>Who sits on the Council</h1>
+
+    <p>
+      I’m Mateusz and I've had this idea for a website for a while. The Council should primarily be an advocacy for ethics in your day to day life. Beyond just programming or business, actually. I've had thoughts about ethics and how to live your life and feel like you are changing the world for the better instead of worse, but a push to actually make something personal out of it was inspired by Louis Rossman (Rossman Repair Group) and Steve Burke (Gamers Nexus). Both are truly inspiring in their own ways and the way they approach covering their topics are what I would consider pinnacle of journalism. Free, unapologetic, independent and rooted in belief of privacy and community.
+    </p>
+    <p>
+      That said, Lemmini Council is a personal project from which other projects might emerge. Its aim is to help me develop something close to personal brand, though I hate that phrase. It's just me, screaming into the void of the Internet (Dead Internet Theory looking too real). I have a few different creative interests, so I also want to use this place as a vessel of things that might yet spring to life, in regards to music or visual arts like video games.
+    </p>
+
+    {
+      (github || linkedin) && (
+        <ul class="links">
+          {github && (
+            <li>
+              <a href={`https://github.com/${github}`} rel="me">
+                GitHub
+              </a>
+            </li>
+          )}
+          {linkedin && (
+            <li>
+              <a href={linkedin} rel="me">
+                LinkedIn
+              </a>
+            </li>
+          )}
+        </ul>
+      )
+    }
+  </div>
+
+  {
+    repos.length > 0 && (
+      <section class="breakout">
+        <h2 class="section-rule">Recent work on GitHub</h2>
+        <ul class="repos">
+          {repos.map((repo) => (
+            <li class="repo">
+              <h3 class="repo__name">
+                <a class="no-external-icon" href={repo.url}>{repo.name}</a>
+              </h3>
+              {repo.description && <p class="repo__description">{repo.description}</p>}
+              <p class="repo__meta">
+                {repo.language && <span>{repo.language}</span>}
+                {repo.stars > 0 && <span>★ {repo.stars}</span>}
+                <span>
+                  Updated <FormattedDate date={repo.updated} />
+                </span>
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .links {
+    display: flex;
+    gap: var(--space-6);
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-ui);
+  }
+
+  .repos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .repo {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4) var(--space-6);
+    border: var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .repo__name {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-lg);
+  }
+
+  .repo__name a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .repo__name a:hover {
+    color: var(--accent);
+  }
+
+  .repo__description {
+    flex: 1;
+    margin-bottom: var(--space-3);
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  .repo__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin: 0;
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+</style>

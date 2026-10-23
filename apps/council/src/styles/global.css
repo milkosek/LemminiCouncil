@@ -1,0 +1,128 @@
+/* Council-specific layout. Shared tokens and element styles live in @lemmini/ui. */
+
+/* Header, main, footer stacked; main grows so the footer sits at the bottom on short pages. */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* One centred reading column with equal space left and right. */
+.page {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: calc(var(--measure) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: var(--space-12) var(--gutter) var(--space-16);
+}
+
+/* Lets an element grow wider than the reading column, centred on it, on wide screens.
+   Used for the home page hero and the About page's repo grid. Post content (code, tables)
+   stays in the column; long code lines scroll sideways instead. */
+@media (min-width: 70rem) {
+  .breakout {
+    --breakout-width: var(--wide-width);
+    width: var(--breakout-width);
+    max-width: none;
+    margin-inline: calc((100% - var(--breakout-width)) / 2);
+  }
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose img {
+  border-radius: var(--radius);
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -100px;
+  z-index: 10;
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-ui);
+}
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--brass);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.12em;
+}
+
+.lede {
+  color: var(--text-muted);
+  font-size: var(--text-lg);
+}
+
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-16) 0 var(--space-8);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+.section-rule::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--brass);
+  opacity: 0.5;
+}
+
+.empty-state {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.1em 0.65em;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+.tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/*
+ * External links get a small ↗ so readers know they're leaving the site.
+ * They still open in the same tab; middle-click or Ctrl+click opens a new one.
+ * The `/ ""` gives the arrow empty alt text, so screen readers don't announce it.
+ * Opt out on a specific link with class="no-external-icon".
+ */
+a[href^='http']:not([href*='//lemminicouncil.org'], [href*='.lemminicouncil.org'], .ctl__facade, .no-external-icon)::after {
+  content: '↗';
+  content: '↗' / '';
+  display: inline-block; /* keeps the link underline off the arrow */
+  margin-left: 0.15em;
+  font-family: var(--font-ui);
+  font-size: 0.75em;
+  line-height: 1;
+  vertical-align: 0.15em;
+}

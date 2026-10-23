@@ -1,0 +1,13 @@
+// Cloudflare Workers deployment for the Council site (static assets only, no server code).
+// See docs/DEPLOYMENT.md.
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "lemmini-council",
+  "compatibility_date": "2026-10-24",
+  "assets": {
+    // Output of `pnpm --filter @lemmini/council build`, relative to the repo root.
+    "directory": "./apps/council/dist",
+    // Serve our own 404.html for unknown URLs.
+    "not_found_handling": "404-page"
+  }
+}

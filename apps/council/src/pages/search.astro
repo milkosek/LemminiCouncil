@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Search" description="Search every post on the Lemmini Council.">
+  <h1>Search</h1>
+
+  <!-- Pagefind builds this index after `astro build`. It is not available in `pnpm dev`. -->
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <div id="search" class="search"></div>
+
+  <p id="search-unavailable" class="empty-state" hidden>
+    Search is built with the site. Run <code>pnpm build && pnpm preview</code> to try it locally.
+  </p>
+  <noscript>
+    <p class="empty-state">
+      Search needs JavaScript. You can browse <a href="/posts/">all posts</a> or
+      <a href="/tags/">posts by tag</a> instead.
+    </p>
+  </noscript>
+
+  <script is:inline src="/pagefind/pagefind-ui.js"></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof PagefindUI === 'function') {
+        new PagefindUI({ element: '#search', showSubResults: true, showImages: false });
+      } else {
+        document.getElementById('search-unavailable').hidden = false;
+      }
+    });
+  </script>
+</BaseLayout>
+
+<style is:global>
+  .search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--surface);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--surface);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 4px;
+    --pagefind-ui-font: var(--font-body);
+  }
+</style>

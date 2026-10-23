@@ -1,0 +1,43 @@
+---
+/**
+ * Privacy-friendly YouTube embed.
+ *
+ * Renders a self-hosted thumbnail (downloaded and optimised at build time) and
+ * loads the player from youtube-nocookie.com only after the visitor clicks.
+ *
+ * Usage in MDX:
+ *   import YouTubeEmbed from '@lemmini/ui/components/YouTubeEmbed.astro';
+ *   <YouTubeEmbed id="VIDEO_ID" />
+ *   <YouTubeEmbed id="VIDEO_ID" title="Custom title" start={42} />
+ *
+ * Requires `i.ytimg.com` in `image.domains` in astro.config.
+ */
+import { Image } from 'astro:assets';
+import ClickToLoad from './ClickToLoad.vue';
+import { fetchOEmbed, youTubeOEmbedUrl } from '../lib/oembed';
+
+interface Props {
+  /** The video ID, e.g. the part after `v=` in a watch URL. */
+  id: string;
+  /** Overrides the title fetched from YouTube. */
+  title?: string;
+  /** Start time in seconds. */
+  start?: number;
+}
+
+const { id, title: titleOverride, start } = Astro.props;
+
+const oembed = titleOverride ? null : await fetchOEmbed(youTubeOEmbedUrl(id));
+const title = titleOverride ?? oembed?.title ?? 'YouTube video';
+
+const params = new URLSearchParams({ autoplay: '1', rel: '0' });
+if (start) params.set('start', String(start));
+
+const src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?${params}`;
+const href = `https://www.youtube.com/watch?v=${encodeURIComponent(id)}${start ? `&t=${start}s` : ''}`;
+const thumbnail = `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`;
+---
+
+<ClickToLoad client:visible provider="YouTube" src={src} title={title} href={href}>
+  <Image src={thumbnail} alt="" width={480} height={360} loading="lazy" />
+</ClickToLoad>

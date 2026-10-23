@@ -1,0 +1,68 @@
+---
+/**
+ * Privacy-friendly Spotify embed.
+ *
+ * Spotify has no cookie-less player, so the click itself is the consent:
+ * nothing is requested from Spotify until the visitor asks for the player.
+ * Cover art is looked up at build time and served from this site.
+ *
+ * Usage in MDX:
+ *   import SpotifyEmbed from '@lemmini/ui/components/SpotifyEmbed.astro';
+ *   <SpotifyEmbed url="https://open.spotify.com/track/TRACK_ID" />
+ *   <SpotifyEmbed url="https://open.spotify.com/album/ALBUM_ID" />
+ *
+ * Sizes (Spotify picks its layout from the player height):
+ *   size="compact"  152px: one row with small cover art. Default for tracks and episodes.
+ *   size="large"    352px: big cover art. Default for albums, playlists, artists and shows,
+ *                   where it also lists the tracks.
+ *   size={600}      any height in pixels. Only useful for albums, playlists, artists and
+ *                   shows, where a taller player lists more tracks. A single track never
+ *                   grows past the large layout, so tracks and episodes are capped at 352px.
+ *
+ * Requires Spotify image hosts in `image.remotePatterns` in astro.config.
+ */
+import { Image } from 'astro:assets';
+import ClickToLoad from './ClickToLoad.vue';
+import { fetchOEmbed, spotifyOEmbedUrl } from '../lib/oembed';
+
+interface Props {
+  /** Share link from Spotify, e.g. https://open.spotify.com/track/… */
+  url: string;
+  /** Overrides the title fetched from Spotify. */
+  title?: string;
+  /** Player size: "compact" (152px), "large" (352px) or a height in pixels. */
+  size?: 'compact' | 'large' | number;
+}
+
+const { url, title: titleOverride, size } = Astro.props;
+
+// Keep only the path (/track/ID, /album/ID, …) and drop share-tracking query params like ?si=
+const parsed = new URL(url);
+const path = parsed.pathname.replace(/^\/intl-[a-z]+/, '');
+const kind = path.split('/')[1] ?? 'track';
+const cleanUrl = `https://open.spotify.com${path}`;
+
+const oembed = await fetchOEmbed(spotifyOEmbedUrl(cleanUrl));
+const title = titleOverride ?? oembed?.title ?? 'Spotify';
+const cover = oembed?.thumbnail_url;
+
+const src = `https://open.spotify.com/embed${path}`;
+const SIZES = { compact: 152, large: 352 } as const;
+const isSingle = kind === 'track' || kind === 'episode';
+const requested = size ?? (isSingle ? 'compact' : 'large');
+let height = typeof requested === 'number' ? Math.max(152, Math.round(requested)) : SIZES[requested];
+// Spotify's track/episode card stops at 352px; anything taller would just be empty space.
+if (isSingle) height = Math.min(height, SIZES.large);
+---
+
+<ClickToLoad
+  client:visible
+  provider="Spotify"
+  src={src}
+  title={title}
+  href={cleanUrl}
+  height={height}
+  action="Load Spotify player"
+>
+  {cover && <Image src={cover} alt="" width={300} height={300} loading="lazy" />}
+</ClickToLoad>
