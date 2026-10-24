@@ -62,3 +62,8 @@ docs/             project documentation
 - [Architecture](docs/ARCHITECTURE.md): repo layout, stack, hosting and content model
 - [Design](docs/DESIGN.md): the visual identity, "The Council Chamber at Night"
 - [Deployment](docs/DEPLOYMENT.md): Cloudflare Pages setup
+
+## Licence
+
+- **Code:** [Apache License 2.0](LICENSE)
+- **Writing** (posts and page text): [CC BY 4.0](CONTENT-LICENSE.md). Share and adapt it freely, with credit.
