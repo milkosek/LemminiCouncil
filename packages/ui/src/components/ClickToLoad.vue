@@ -59,6 +59,10 @@ async function load(event: MouseEvent) {
 <template>
   <figure class="ctl">
     <div class="ctl__box" :class="{ 'ctl__box--loaded': loaded }" :style="boxStyle">
+      <!-- allow: autoplay (start right after the click), clipboard-write (the players' "copy link"
+           buttons; write-only, on click), encrypted-media (Spotify full tracks), fullscreen and
+           picture-in-picture. Firefox logs "unsupported feature" warnings for the first three; it
+           ignores them harmlessly (it has its own rules), and Chromium browsers need them. -->
       <iframe
         v-if="loaded"
         ref="frame"

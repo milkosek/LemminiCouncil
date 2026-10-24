@@ -20,15 +20,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </noscript>
 
   <script is:inline src="/pagefind/pagefind-ui.js"></script>
-  <script is:inline>
-    window.addEventListener('DOMContentLoaded', () => {
-      if (typeof PagefindUI === 'function') {
-        new PagefindUI({ element: '#search', showSubResults: true, showImages: false });
-      } else {
-        document.getElementById('search-unavailable').hidden = false;
-      }
-    });
-  </script>
+  <script is:inline src="/scripts/search-init.js"></script>
 </BaseLayout>
 
 <style is:global>

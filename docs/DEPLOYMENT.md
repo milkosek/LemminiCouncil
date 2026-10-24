@@ -52,8 +52,19 @@ Until then, the site is available at `lemmini-council.<your-subdomain>.workers.d
 
 ## Headers
 
-`_headers` sets security headers and long-term caching for hashed assets. A
-Content-Security-Policy is still a TODO.
+`apps/council/public/_headers` sets security headers and long-term caching for hashed assets.
+
+The Content-Security-Policy comes in two parts that browsers enforce together:
+
+- A `<meta>` tag Astro adds to every page at build time (`security.csp` in `astro.config.mjs`).
+  Astro hashes its own scripts and styles; everything else must come from the site itself, apart
+  from the YouTube and Spotify players, which are allowed as frames.
+- A `Content-Security-Policy` header in `_headers` for what a `<meta>` tag can't set
+  (`frame-ancestors`).
+
+The CSP is not applied in `pnpm dev`. Test changes with `pnpm build && pnpm preview` and watch the
+browser console for "Content-Security-Policy" errors. Inline `<script>` tags will be blocked, so
+put scripts in `apps/council/public/scripts/` or let Astro bundle them.
 
 ## Analytics
 

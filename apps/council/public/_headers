@@ -1,5 +1,6 @@
-# Cloudflare Pages response headers.
-# TODO: add a Content-Security-Policy once the set of scripts is settled.
+# Response headers, applied by Cloudflare Workers static assets.
+# The main Content-Security-Policy is a <meta> tag that Astro adds to each page (astro.config.mjs).
+# This header adds the parts a <meta> tag can't carry. Browsers enforce both policies.
 
 /*
   X-Content-Type-Options: nosniff
@@ -7,6 +8,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()
   Cross-Origin-Opener-Policy: same-origin
+  Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'
 
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable

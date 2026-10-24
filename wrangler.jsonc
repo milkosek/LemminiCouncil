@@ -9,5 +9,11 @@
     "directory": "./apps/council/dist",
     // Serve our own 404.html for unknown URLs.
     "not_found_handling": "404-page"
-  }
+  },
+  // Serve the site on the real domain. Cloudflare creates the DNS record and certificate.
+  // www.lemminicouncil.org is redirected to this address by a Redirect Rule (see docs/DEPLOYMENT.md).
+  "routes": [{ "pattern": "lemminicouncil.org", "custom_domain": true }],
+  // Keep the workers.dev address and per-version preview URLs for testing branches.
+  "workers_dev": true,
+  "preview_urls": true
 }

@@ -33,15 +33,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     {noindex && <meta name="robots" content="noindex" />}
 
     <!-- Night is the default. Apply a saved "day" choice before first paint. -->
-    <script is:inline>
-      try {
-        if (localStorage.getItem('lc-theme') === 'day') {
-          document.documentElement.dataset.theme = 'day';
-        }
-      } catch {
-        // Storage unavailable (private mode, blocked site data): stay on night.
-      }
-    </script>
+    <script is:inline src="/scripts/theme-init.js"></script>
     <meta name="theme-color" content="#14110f" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
