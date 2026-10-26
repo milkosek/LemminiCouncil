@@ -1,0 +1,26 @@
+# Dependabot keeps dependencies current with grouped, delayed pull requests. Nothing merges
+# without review.
+#
+# - Version updates: weekly, grouped into one PR, and only for releases that have been public for
+#   a while (cooldown). Most poisoned releases are spotted and pulled from npm within hours or days.
+# - Security updates: separate PRs as soon as a fix exists (cooldown doesn't apply to these).
+#   Requires "Dependabot security updates" in Settings → Security.
+#
+# pnpm-workspace.yaml has a matching minimumReleaseAge, so manual installs get the same delay.
+version: 2
+updates:
+  - package-ecosystem: npm # also handles pnpm workspaces and pnpm-lock.yaml
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 5
+      semver-major-days: 14
+    groups:
+      dependencies:
+        applies-to: version-updates
+        patterns: ['*']
+      security-fixes:
+        applies-to: security-updates
+        patterns: ['*']

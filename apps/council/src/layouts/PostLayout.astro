@@ -11,7 +11,13 @@ const { post } = Astro.props;
 const { title, description, published, updated, tags, series, draft } = post.data;
 ---
 
-<BaseLayout title={title} description={description} type="article" publishedTime={published}>
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedTime={published}
+  image={`/og/posts/${post.id}.png`}
+>
   <article class="post" data-pagefind-body>
     <header class="post__header">
       {series && <p class="eyebrow">{series}</p>}

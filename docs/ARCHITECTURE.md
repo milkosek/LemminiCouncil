@@ -24,7 +24,7 @@
 | Comments | giscus (GitHub Discussions) | Optional, opt-in per post |
 | Embeds | Click-to-load facades | See *Third-party embeds* |
 | Hosting | Cloudflare Pages | One Pages project per app |
-| Analytics | Cloudflare Web Analytics | Cookie-less, aggregate only |
+| Analytics | None in the page | Cloudflare's server-side request stats only; no script, no cookies |
 | Lint / format | ESLint + Prettier | Shared config in `packages/config` |
 
 ## Repository layout (target)

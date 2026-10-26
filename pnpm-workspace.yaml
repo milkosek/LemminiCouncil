@@ -2,7 +2,31 @@ packages:
   - apps/*
   - packages/*
 
-# pnpm 10 blocks dependency install scripts by default. Allow only the ones we need.
+# Supply-chain protection
+# ----------------------------------------------------------------------------------------------
+# pnpm 10 blocks dependency install scripts by default (the usual way malicious packages run).
+# Allow only the ones we need.
 onlyBuiltDependencies:
   - esbuild
   - sharp
+
+# Fail the install (instead of warning) if a dependency wants to run a build script that isn't
+# reviewed above. Add new ones to onlyBuiltDependencies only after checking why they need it.
+strictDepBuilds: true
+
+# Don't install versions published less than 3 days ago. Poisoned releases are usually caught and
+# removed within that window. For an urgent fix, add the package to minimumReleaseAgeExclude.
+minimumReleaseAge: 4320 # minutes
+
+# Fail if a package's publishing trust drops compared with earlier versions (e.g. a package that
+# used to be published with provenance suddenly isn't) — a common sign of a hijacked account.
+trustPolicy: no-downgrade
+
+# Only direct dependencies may come from git URLs or tarballs; everything else must be from npm.
+blockExoticSubdeps: true
+
+# Force patched versions of transitive dependencies whose parents haven't caught up yet.
+# Remove an entry once the parent package ships the fix itself (check with `pnpm why <name>`).
+overrides:
+  # satori pins fflate 0.7.3 (GHSA-px8p-9vwx-vf98, infinite loop on malformed ZIP64). 0.7.5 is the fixed patch release.
+  'fflate@<0.7.5': '^0.7.5'

@@ -75,10 +75,38 @@ put scripts in `apps/council/public/scripts/` or let Astro bundle them.
 the repo (Settings → Security → Private vulnerability reporting). The file's `Expires` date must be
 renewed **before 2027-10-01**, and then at least once a year.
 
+## Dependencies and supply chain
+
+Everything heavy (sharp, satori, Astro itself) runs only at build time; visitors get static files.
+The main risk from a compromised package is to the build machine and the developer's accounts.
+
+- **Dependabot** (`.github/dependabot.yml`): weekly grouped PRs for releases at least 5 days old
+  (14 for major versions), separate PRs for security fixes. Alerts and malware alerts are on in
+  the repo settings. Nothing is merged automatically; Cloudflare builds a preview for each PR.
+- **pnpm** (`pnpm-workspace.yaml`): install scripts only for esbuild and sharp, and the install
+  fails on any other (`strictDepBuilds`); no versions younger than 3 days (`minimumReleaseAge`);
+  fail if a package's publishing trust drops (`trustPolicy`); transitive dependencies only from npm
+  (`blockExoticSubdeps`).
+- **Overrides** in `pnpm-workspace.yaml` patch transitive dependencies; each has a comment saying
+  when it can be removed.
+- Check now and then with `pnpm audit`.
+
 ## Analytics
 
-Not enabled yet. If it is turned on, use **Cloudflare Web Analytics** (cookie-less), and update the
-privacy page (`apps/council/src/pages/privacy.astro`) in the same change.
+There is **no analytics script** on the site. Cloudflare's dashboard still shows request-level
+traffic (visits, countries, popular pages), counted on its servers.
+
+Cloudflare may switch on **Web Analytics** for a new zone and inject `beacon.min.js` into every
+page (the CSP then blocks it and the console shows errors). It is turned off: Analytics & Logs →
+Web Analytics → add the site → Manage site → automatic setup: **Disable**. If you ever want it on,
+allow `static.cloudflareinsights.com` in the CSP and update the privacy page
+(`apps/council/src/pages/privacy.astro`) in the same change.
+
+## Performance
+
+Lighthouse on the live site (2026-10-26, Incognito so browser extensions don't skew results):
+100 for Performance, Accessibility, Best Practices and SEO on both desktop and mobile.
+Re-run after big changes, always in an Incognito or Guest window.
 
 ## Adding another site later
 

@@ -1,5 +1,5 @@
 ---
-import ThemeToggle from '@lemmini/ui/components/ThemeToggle.vue';
+import ThemeToggle from '@lemmini/ui/components/ThemeToggle.astro';
 import { nav, site } from '../site.config';
 
 const path = Astro.url.pathname;
@@ -27,7 +27,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
       </ul>
     </nav>
 
-    <ThemeToggle client:load />
+    <ThemeToggle />
   </div>
 </header>
 
