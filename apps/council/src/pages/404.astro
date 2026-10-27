@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { ARCHIVE_404 } from '../lib/ascii';
 ---
 
 <BaseLayout title="Not found" description="This page could not be found." noindex>
@@ -7,6 +8,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <p class="eyebrow">Error 404</p>
     <h1>The Council has no record of this page.</h1>
     <p class="lede">It may have moved, or it may never have existed.</p>
+    <pre class="archive-scene" aria-hidden="true" set:text={ARCHIVE_404} />
     <p><a href="/">Return to the chamber →</a></p>
   </div>
 </BaseLayout>
+
+<style>
+  .archive-scene {
+    margin: var(--space-8) 0;
+    padding: 0;
+    border: 0;
+    overflow-x: auto;
+    background: none;
+    font-family: var(--font-mono);
+    font-size: clamp(0.6rem, 0.45rem + 0.6vw, 0.85rem);
+    line-height: 1.25;
+    color: var(--brass);
+  }
+</style>

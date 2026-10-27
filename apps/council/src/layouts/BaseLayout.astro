@@ -1,7 +1,9 @@
 ---
 import '@lemmini/ui/styles/index.css';
 import '../styles/global.css';
+import EasterEggs from '../components/EasterEggs.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { SEAL } from '../lib/ascii';
 import SiteHeader from '../components/SiteHeader.astro';
 import { site } from '../site.config';
 
@@ -28,11 +30,27 @@ const {
 
 const fullTitle = title ? `${title} · ${site.title}` : `${site.title} · ${site.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// For anyone who presses Ctrl+U. Rendered with set:html so the art keeps its line breaks.
+const sourceBanner = `<!--
+${SEAL}
+
+  LEMMINI COUNCIL
+
+  Hello dear inspector of source code. The Council halls are always open to visitors.
+  No trackers, no dark patterns, no cookies. Check for yourself:
+  ${site.repo}
+
+  Credits: /humans.txt
+  Security: /.well-known/security.txt
+-->
+`;
 const imageUrl = new URL(image, Astro.site);
 const imageAlt = title ? `${title} · ${site.title}` : `${site.title}: ${site.tagline}`;
 ---
 
 <!doctype html>
+<Fragment set:html={sourceBanner} />
 <html lang={site.locale} data-theme="night">
   <head>
     <meta charset="utf-8" />
@@ -48,6 +66,7 @@ const imageAlt = title ? `${title} · ${site.title}` : `${site.title}: ${site.ta
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="author" href="/humans.txt" type="text/plain" />
     <link rel="alternate" type="application/rss+xml" title={site.title} href="/rss.xml" />
 
     <meta property="og:site_name" content={site.title} />
@@ -76,5 +95,6 @@ const imageAlt = title ? `${title} · ${site.title}` : `${site.title}: ${site.ta
       <slot />
     </main>
     <SiteFooter />
+    <EasterEggs />
   </body>
 </html>

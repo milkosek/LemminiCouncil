@@ -10,3 +10,8 @@ trim_trailing_whitespace = true
 
 [*.md]
 trim_trailing_whitespace = false
+
+# Keep the byte-order mark: it tells browsers this plain-text file is UTF-8 (for the ł and arrows),
+# since static hosts serve .txt without a charset.
+[apps/council/public/humans.txt]
+charset = utf-8-bom

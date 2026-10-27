@@ -1,0 +1,33 @@
+﻿/* THE COUNCIL */
+
+  Overseer:   Mateusz Miłkowski
+  Roles:      Writer, software engineer, thinker, musician and some...
+  Site:       https://lemminicouncil.org
+  GitHub:     https://github.com/milkosek
+  LinkedIn:   https://www.linkedin.com/in/mateusz-milkowski/
+
+/* THANKS */
+
+  Built with help from:   Claude (Anthropic), pair-programmer for the site's code
+  Inspirations:           Louis Rossman and Steve Burke, for showing what
+                          independent, unapologetic work looks like
+  Artwork:                coming soon
+
+/* THE SITE */
+
+  Language:   English
+  Built with: Astro, Vue, TypeScript, Pagefind, Satori
+  Fonts:      Cormorant Garamond, Source Serif 4, JetBrains Mono (self-hosted)
+  Hosting:    Cloudflare Workers
+  Source:     https://github.com/milkosek/LemminiCouncil
+  Licences:   writing CC BY 4.0, code Apache 2.0
+
+/* PRINCIPLES */
+
+  No trackers. No dark patterns. No cookies set by this site.
+  Embedded players load only when you ask for them.
+  Every claim on the privacy page can be checked against the source.
+
+/* PROCEDURE */
+
+  The Council keeps an old procedure on the books:  ↑ ↑ ↓ ↓ ← → ← → B A

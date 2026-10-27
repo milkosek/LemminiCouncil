@@ -2,9 +2,31 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Post = CollectionEntry<'posts'>;
 
+/**
+ * Descriptions show up under the title in search results and link previews. LinkedIn asks for at
+ * least 100 characters; around 100–160 reads well everywhere.
+ */
+const DESCRIPTION_MIN = 100;
+const DESCRIPTION_MAX = 160;
+const warned = new Set<string>();
+
+/** Warns (once per post, without failing the build) about descriptions outside the ideal length. */
+function checkDescription(post: Post): void {
+  if (post.data.draft || warned.has(post.id)) return;
+  warned.add(post.id);
+  const length = post.data.description.length;
+  if (length < DESCRIPTION_MIN || length > DESCRIPTION_MAX) {
+    console.warn(
+      `[posts] "${post.id}": description is ${length} characters; aim for ` +
+        `${DESCRIPTION_MIN}–${DESCRIPTION_MAX} so search results and link previews show it in full.`,
+    );
+  }
+}
+
 /** All posts that should be built, newest first. Drafts are included in dev only. */
 export async function getPublishedPosts(): Promise<Post[]> {
   const posts = await getCollection('posts', ({ data }) => import.meta.env.DEV || !data.draft);
+  posts.forEach(checkDescription);
   return posts.sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
 }
 

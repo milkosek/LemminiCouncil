@@ -45,7 +45,8 @@ pnpm format       # Prettier
 ```
 
 Posts live in `apps/council/src/content/posts/`. Set `draft: true` in a post's frontmatter to keep
-it out of production.
+it out of production. Keep each `description` between 100 and 160 characters: it's what search
+results and link previews show, and the build warns when it's outside that range.
 
 ## Repository layout
 

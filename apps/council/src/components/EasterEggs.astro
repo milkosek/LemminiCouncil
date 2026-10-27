@@ -1,0 +1,170 @@
+---
+/**
+ * Small surprises for the curious. Everything here is bundled into a script file from this site,
+ * so it works with the Content-Security-Policy.
+ *
+ * - A greeting in the browser's DevTools console.
+ * - The Konami code (↑ ↑ ↓ ↓ ← → ← → B A): "Order! Order!" and a lemming walking the other way.
+ *   Ignored while typing in a text field. The walk is skipped for people who prefer reduced motion.
+ */
+---
+
+<script>
+  import { DISSENTER, SEAL } from '../lib/ascii';
+  import { site } from '../site.config';
+
+  // --- DevTools greeting --------------------------------------------------------------------
+  const heading = 'font: 700 16px Georgia, serif; color: #c9a45c; letter-spacing: 0.12em;';
+  const body = 'font: 13px/1.5 Georgia, serif; color: inherit;';
+
+  console.log(`%c${SEAL}`, 'font-family: monospace; color: #d65a52; line-height: 1.1;');
+  console.log('%cLEMMINI COUNCIL', heading);
+  console.log(
+    `%cThe Council recognises a fellow inspector of source code.
+No trackers in here. We checked. Twice, for good measure.
+
+Source code     ${site.repo}
+Credits         ${location.origin}/humans.txt
+Found a bug?    ${location.origin}/.well-known/security.txt
+
+The Council also keeps an old procedure on the books:  ↑ ↑ ↓ ↓ ← → ← → B A`,
+    body,
+  );
+
+  // --- Konami code --------------------------------------------------------------------------
+  const SEQUENCE = [
+    'ArrowUp',
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowLeft',
+    'ArrowRight',
+    'b',
+    'a',
+  ];
+  let position = 0;
+  let active = false;
+
+  function isTyping(target: EventTarget | null): boolean {
+    return (
+      target instanceof HTMLElement &&
+      (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
+    );
+  }
+
+  function orderOrder(): void {
+    if (active) return;
+    active = true;
+
+    const toast = document.createElement('div');
+    toast.className = 'order-toast';
+    toast.setAttribute('role', 'status');
+    const title = document.createElement('strong');
+    title.textContent = 'Order! Order!';
+    const note = document.createElement('small');
+    note.textContent = 'The Council recognises the dissenter.';
+    toast.append(title, note);
+    document.body.append(toast);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let walker: HTMLElement | undefined;
+    if (!prefersReducedMotion) {
+      walker = document.createElement('pre');
+      walker.className = 'order-walker';
+      walker.setAttribute('aria-hidden', 'true');
+      walker.textContent = DISSENTER;
+      document.body.append(walker);
+    }
+
+    window.setTimeout(() => toast.remove(), 3500);
+    window.setTimeout(() => {
+      walker?.remove();
+      active = false;
+    }, prefersReducedMotion ? 3500 : 8000);
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (isTyping(event.target)) return;
+    const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+    if (key === SEQUENCE[position]) {
+      position += 1;
+      if (position === SEQUENCE.length) {
+        position = 0;
+        orderOrder();
+      }
+    } else {
+      position = key === SEQUENCE[0] ? 1 : 0;
+    }
+  });
+</script>
+
+<style is:global>
+  .order-toast {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    z-index: 100;
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-6) var(--space-8);
+    border: 1px solid var(--brass);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: 0 12px 40px rgb(0 0 0 / 0.45);
+    text-align: center;
+    transform: translateX(-50%);
+    animation: order-in 0.25s ease-out;
+  }
+
+  .order-toast strong {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--accent);
+  }
+
+  .order-toast small {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .order-walker {
+    position: fixed;
+    right: -5rem;
+    bottom: 1rem;
+    z-index: 100;
+    margin: 0;
+    /* Undo the default code-block frame from base.css. */
+    padding: 0;
+    border: 0;
+    background: none;
+    overflow: visible;
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    line-height: 1.1;
+    color: var(--brass);
+    pointer-events: none;
+    animation: order-walk 7.5s linear forwards;
+  }
+
+  @keyframes order-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 10px);
+    }
+  }
+
+  @keyframes order-walk {
+    to {
+      transform: translateX(calc(-100vw - 10rem));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .order-walker {
+      display: none;
+    }
+  }
+</style>

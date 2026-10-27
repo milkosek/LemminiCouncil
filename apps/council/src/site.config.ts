@@ -8,6 +8,8 @@ export const site = {
     'Personal project shining light and thoughts on the IT industry, unethical business practices and a sprinkle of philosophy.',
   author: 'Mateusz Miłkowski',
   locale: 'en',
+  /** Public source code of this site. */
+  repo: 'https://github.com/milkosek/LemminiCouncil',
 
   /** Leave a value empty to hide that link. */
   social: {
