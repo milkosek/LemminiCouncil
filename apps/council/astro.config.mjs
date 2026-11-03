@@ -57,8 +57,8 @@ export default defineConfig({
         // data: covers tiny font files the build inlines into the CSS instead of separate files.
         "font-src 'self' data:",
         "connect-src 'self'",
-        // Embeds, only after the visitor clicks play.
-        'frame-src https://www.youtube-nocookie.com https://open.spotify.com',
+        // Embeds and comments, only after the visitor asks for them.
+        'frame-src https://www.youtube-nocookie.com https://open.spotify.com https://giscus.app',
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",

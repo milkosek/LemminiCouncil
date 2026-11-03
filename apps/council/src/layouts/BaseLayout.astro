@@ -60,9 +60,10 @@ const imageAlt = title ? `${title} · ${site.title}` : `${site.title}: ${site.ta
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
 
+    {/* Browser UI colour (mobile toolbars). theme-init.js and the theme toggle keep it in step. */}
+    <meta name="theme-color" content="#14110f" />
     <!-- Night is the default. Apply a saved "day" choice before first paint. -->
     <script is:inline src="/scripts/theme-init.js"></script>
-    <meta name="theme-color" content="#14110f" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />

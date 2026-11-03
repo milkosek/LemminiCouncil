@@ -6,8 +6,9 @@
  * framework just for one button put Vue on the critical path of every page load.
  *
  * The choice is kept in localStorage only (no cookie). The matching pre-paint script is
- * apps/council/public/scripts/theme-init.js. Without JavaScript the button stays invisible
- * (it still reserves its space, so nothing shifts when it appears).
+ * apps/council/public/scripts/theme-init.js. The button also keeps <meta name="theme-color">
+ * (the browser's own toolbar colour on mobile) in step with the page. Without JavaScript the
+ * button stays invisible (it still reserves its space, so nothing shifts when it appears).
  */
 ---
 
@@ -38,7 +39,10 @@
 
 <script>
   const STORAGE_KEY = 'lc-theme';
+  /** Browser UI colour per theme: the --bg token from tokens.css. Also set in theme-init.js. */
+  const THEME_COLOR = { night: '#14110f', day: '#f4ecdc' } as const;
   const root = document.documentElement;
+  const themeColorMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
 
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')) {
     const syncLabel = () => {
@@ -51,6 +55,7 @@
     button.addEventListener('click', () => {
       const next = root.dataset.theme === 'day' ? 'night' : 'day';
       root.dataset.theme = next;
+      themeColorMeta?.setAttribute('content', THEME_COLOR[next]);
       try {
         if (next === 'day') localStorage.setItem(STORAGE_KEY, 'day');
         else localStorage.removeItem(STORAGE_KEY);

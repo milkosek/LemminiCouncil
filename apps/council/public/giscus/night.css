@@ -1,0 +1,117 @@
+/*! giscus theme "The Chamber at Night" for lemminicouncil.org.
+ * Variable names follow giscus' transparent_dark theme, modified from GitHub's dark theme in
+ * primer/primitives (MIT License, Copyright (c) 2018 GitHub Inc.).
+ *
+ * Loaded by the giscus iframe from https://lemminicouncil.org/giscus/night.css (see Comments.astro).
+ * giscus requests it with crossorigin="anonymous", so _headers allows giscus.app via CORS.
+ * Colours come from packages/ui/src/styles/tokens.css; keep them in step.
+ */
+
+main {
+  /* Code in comments: GitHub's dark syntax colours. */
+  --color-prettylights-syntax-comment: #8b949e;
+  --color-prettylights-syntax-constant: #79c0ff;
+  --color-prettylights-syntax-entity: #d2a8ff;
+  --color-prettylights-syntax-storage-modifier-import: #e9e1d0;
+  --color-prettylights-syntax-entity-tag: #7ee787;
+  --color-prettylights-syntax-keyword: #ff7b72;
+  --color-prettylights-syntax-string: #a5d6ff;
+  --color-prettylights-syntax-variable: #ffa657;
+  --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
+  --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+  --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+  --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+  --color-prettylights-syntax-carriage-return-bg: #b62324;
+  --color-prettylights-syntax-string-regexp: #7ee787;
+  --color-prettylights-syntax-markup-list: #f2cc60;
+  --color-prettylights-syntax-markup-heading: #1f6feb;
+  --color-prettylights-syntax-markup-italic: #e9e1d0;
+  --color-prettylights-syntax-markup-bold: #e9e1d0;
+  --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
+  --color-prettylights-syntax-markup-deleted-bg: #67060c;
+  --color-prettylights-syntax-markup-inserted-text: #aff5b4;
+  --color-prettylights-syntax-markup-inserted-bg: #033a16;
+  --color-prettylights-syntax-markup-changed-text: #ffdfb6;
+  --color-prettylights-syntax-markup-changed-bg: #5a1e02;
+  --color-prettylights-syntax-markup-ignored-text: #e9e1d0;
+  --color-prettylights-syntax-markup-ignored-bg: #1158c7;
+  --color-prettylights-syntax-meta-diff-range: #d2a8ff;
+  --color-prettylights-syntax-brackethighlighter-angle: #8b949e;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
+  --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
+
+  /* Buttons: quiet secondary buttons, accent-red primary ("Comment", "Sign in"). */
+  --color-btn-text: #e9e1d0;
+  --color-btn-bg: rgb(233 225 208 / 6%);
+  --color-btn-border: #2e2822;
+  --color-btn-shadow: 0 0 transparent;
+  --color-btn-inset-shadow: 0 0 transparent;
+  --color-btn-hover-bg: rgb(233 225 208 / 10%);
+  --color-btn-hover-border: #a39a88;
+  --color-btn-active-bg: rgb(233 225 208 / 14%);
+  --color-btn-active-border: #a39a88;
+  --color-btn-selected-bg: rgb(233 225 208 / 10%);
+  --color-btn-primary-text: #14110f;
+  --color-btn-primary-bg: #d65a52;
+  --color-btn-primary-border: transparent;
+  --color-btn-primary-shadow: 0 0 transparent;
+  --color-btn-primary-inset-shadow: 0 0 transparent;
+  --color-btn-primary-hover-bg: #e2726b;
+  --color-btn-primary-hover-border: transparent;
+  --color-btn-primary-selected-bg: #d65a52;
+  --color-btn-primary-selected-shadow: 0 0 transparent;
+  --color-btn-primary-disabled-text: rgb(20 17 15 / 60%);
+  --color-btn-primary-disabled-bg: rgb(214 90 82 / 50%);
+  --color-btn-primary-disabled-border: transparent;
+  --color-action-list-item-default-hover-bg: rgb(233 225 208 / 8%);
+  --color-segmented-control-bg: rgb(233 225 208 / 6%);
+  --color-segmented-control-button-bg: transparent;
+  --color-segmented-control-button-selected-border: #a39a88;
+
+  /* Text: the site's warm off-white and muted tones instead of GitHub's blue-grey. */
+  --color-fg-default: #e9e1d0;
+  --color-fg-muted: #a39a88;
+  --color-fg-subtle: #7d7466;
+
+  /* Backgrounds: transparent so the page's panel shows through; inputs sit a step darker. */
+  --color-canvas-default: transparent;
+  --color-canvas-overlay: #1d1915;
+  --color-canvas-inset: #14110f;
+  --color-canvas-subtle: rgb(20 17 15 / 55%);
+  --color-border-default: #3a332b;
+  --color-border-muted: #2e2822;
+  --color-neutral-muted: rgb(233 225 208 / 8%);
+  --color-neutral-subtle: rgb(233 225 208 / 5%);
+
+  /* Links and highlights in the site's accent red; notices in brass. */
+  --color-accent-fg: #d65a52;
+  --color-accent-emphasis: #d65a52;
+  --color-accent-muted: rgb(214 90 82 / 40%);
+  --color-accent-subtle: rgb(214 90 82 / 12%);
+  --color-success-fg: #3fb950;
+  --color-attention-fg: #c9a45c;
+  --color-attention-muted: rgb(201 164 92 / 40%);
+  --color-attention-subtle: rgb(201 164 92 / 15%);
+  --color-danger-fg: #e2726b;
+  --color-danger-muted: rgb(214 90 82 / 40%);
+  --color-danger-subtle: rgb(214 90 82 / 10%);
+  --color-primer-shadow-inset: 0 0 transparent;
+  --color-scale-gray-7: #2e2822;
+  --color-scale-blue-8: rgb(214 90 82 / 25%);
+
+  /*! Extensions from @primer/css/alerts/flash.scss */
+  --color-social-reaction-bg-hover: var(--color-scale-gray-7);
+  --color-social-reaction-bg-reacted-hover: var(--color-scale-blue-8);
+}
+
+main .pagination-loader-container {
+  background-image: url('https://github.com/images/modules/pulls/progressive-disclosure-line-dark.svg');
+}
+
+.gsc-pagination-button {
+  background-color: var(--color-btn-bg);
+}
+
+main .gsc-loading-image {
+  background-image: url('https://github.githubassets.com/images/mona-loading-dark.gif');
+}

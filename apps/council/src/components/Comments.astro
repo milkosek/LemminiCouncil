@@ -1,0 +1,207 @@
+---
+/**
+ * Comments, stored as GitHub Discussions and displayed through giscus (https://giscus.app).
+ *
+ * Click-to-load, like the video embeds: nothing is requested from giscus or GitHub until the
+ * visitor asks. We build the giscus iframe ourselves instead of loading giscus' client script,
+ * so no third-party script runs on this page and the CSP only needs to allow the frame.
+ *
+ * Hidden entirely until site.comments is configured (see site.config.ts).
+ */
+import { site } from '../site.config';
+
+interface Props {
+  /** Stable key that links this page to its discussion (the post id). */
+  term: string;
+}
+
+const { term } = Astro.props;
+const { repo, repoId, category, categoryId } = site.comments;
+const enabled = Boolean(repo && repoId && category && categoryId);
+const discussionsUrl = `https://github.com/${repo}/discussions`;
+// Our own giscus themes (public/giscus/), always from the live site: the giscus iframe can't load
+// them from the dev server. So theme changes show up, in dev too, once they're deployed.
+const themeBase = new URL('/giscus/', Astro.site ?? 'https://lemminicouncil.org').href;
+---
+
+{
+  enabled && (
+    <section class="comments" aria-labelledby="comments-heading" data-pagefind-ignore>
+      <h2 id="comments-heading" class="section-rule">
+        Discussion
+      </h2>
+      <div
+        class="comments__body"
+        data-comments
+        data-repo={repo}
+        data-repo-id={repoId}
+        data-category={category}
+        data-category-id={categoryId}
+        data-term={term}
+        data-theme-base={themeBase}
+      >
+        <div class="comments__facade">
+          <p>
+            Comments live in this site's GitHub Discussions and are shown here through giscus.
+            Nothing loads from GitHub or giscus until you ask. Posting needs a GitHub account.
+          </p>
+          <button type="button" class="comments__button" data-comments-load hidden>
+            Load comments
+          </button>
+          <p class="comments__alt">
+            <a href={discussionsUrl}>Or open the discussions on GitHub</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  const GISCUS = 'https://giscus.app';
+  const SESSION_KEY = 'giscus-session';
+
+  // giscus signs people in through GitHub and sends them back with ?giscus=<session>.
+  // Keep that session (localStorage, this device only) and tidy the address bar.
+  function takeSession(): { session: string; returning: boolean } {
+    const url = new URL(location.href);
+    const fromUrl = url.searchParams.get('giscus');
+    let session = '';
+    try {
+      if (fromUrl) localStorage.setItem(SESSION_KEY, JSON.stringify(fromUrl));
+      session = JSON.parse(localStorage.getItem(SESSION_KEY) ?? '""');
+    } catch {
+      // Storage blocked: comments still load, the visitor just won't stay signed in.
+    }
+    if (fromUrl) {
+      url.searchParams.delete('giscus');
+      history.replaceState(history.state, '', url);
+    }
+    return { session: fromUrl ?? session, returning: Boolean(fromUrl) };
+  }
+
+  for (const container of document.querySelectorAll<HTMLElement>('[data-comments]')) {
+    const button = container.querySelector<HTMLButtonElement>('[data-comments-load]');
+    if (!button) continue;
+    button.hidden = false;
+    const { session, returning } = takeSession();
+
+    const load = () => {
+      const { repo, repoId, category, categoryId, term, themeBase } = container.dataset;
+      const themeFor = (siteTheme: string | undefined) =>
+        `${themeBase ?? ''}${siteTheme === 'day' ? 'day' : 'night'}.css`;
+      const params = new URLSearchParams({
+        origin: location.href.split('#')[0] ?? location.href,
+        session,
+        theme: themeFor(document.documentElement.dataset.theme),
+        reactionsEnabled: '1',
+        emitMetadata: '0',
+        inputPosition: 'top',
+        repo: repo ?? '',
+        repoId: repoId ?? '',
+        category: category ?? '',
+        categoryId: categoryId ?? '',
+        strict: '1',
+        term: term ?? '',
+        description:
+          document.querySelector<HTMLMetaElement>('meta[name="description"]')?.content ?? '',
+        backLink: document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href ?? '',
+      });
+
+      const frame = document.createElement('iframe');
+      frame.className = 'comments__frame';
+      frame.title = 'Comments';
+      frame.src = `${GISCUS}/widget?${params}`;
+      frame.setAttribute('scrolling', 'no');
+      frame.allow = 'clipboard-write';
+      container.replaceChildren(frame);
+      container.classList.add('comments__body--loaded');
+
+      // giscus reports its height and sign-out through postMessage.
+      window.addEventListener('message', (event) => {
+        if (event.origin !== GISCUS || event.source !== frame.contentWindow) return;
+        const data = (event.data as { giscus?: { resizeHeight?: number; signOut?: boolean } })
+          ?.giscus;
+        if (!data) return;
+        if (data.resizeHeight) frame.style.height = `${data.resizeHeight}px`;
+        if (data.signOut) {
+          try {
+            localStorage.removeItem(SESSION_KEY);
+          } catch {
+            // Nothing stored to remove.
+          }
+        }
+      });
+
+      // Follow the site's theme toggle.
+      new MutationObserver(() => {
+        frame.contentWindow?.postMessage(
+          { giscus: { setConfig: { theme: themeFor(document.documentElement.dataset.theme) } } },
+          GISCUS,
+        );
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    };
+
+    button.addEventListener('click', load, { once: true });
+    // Coming back from signing in: the visitor already asked for comments.
+    if (returning) load();
+  }
+</script>
+
+<style>
+  .comments {
+    margin-top: var(--space-16);
+  }
+
+  .comments__facade {
+    padding: var(--space-6);
+    border: var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+
+  .comments__facade p {
+    margin: 0 0 var(--space-4);
+  }
+
+  .comments__button {
+    padding: 0.5em 1.1em;
+    border: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font: 600 var(--text-sm) var(--font-ui);
+    cursor: pointer;
+  }
+
+  .comments__button:hover {
+    background: var(--accent-strong);
+  }
+
+  .comments__alt {
+    margin: var(--space-4) 0 0 !important;
+  }
+
+  /* Once loaded, the frame sits in the same panel as the facade: giscus has no outer spacing of
+     its own and expects the page to provide it. */
+  .comments__body--loaded {
+    padding: var(--space-4) var(--space-6) var(--space-2);
+    border: var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  /* :global because the script creates the iframe, so it never gets Astro's scoping attribute
+     (without this the browser's default 300px-wide, bordered iframe is what shows). */
+  .comments__body :global(.comments__frame) {
+    display: block;
+    width: 100%;
+    min-height: 150px;
+    border: 0;
+    /* No color-scheme override: the frame inherits dark (night) or light (day) from the page,
+       matching giscus' own theme, which keeps its background transparent. */
+  }
+</style>

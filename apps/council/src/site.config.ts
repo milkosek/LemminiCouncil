@@ -17,6 +17,18 @@ export const site = {
     linkedin: 'https://www.linkedin.com/in/mateusz-milkowski/',
   },
 
+  /**
+   * Comments under posts, stored as GitHub Discussions and shown through giscus.
+   * The section stays hidden until all four values are filled in. Get the IDs from
+   * https://giscus.app (see docs/ARCHITECTURE.md → Comments).
+   */
+  comments: {
+    repo: 'milkosek/LemminiCouncil',
+    repoId: 'R_kgDOVUezCg',
+    category: 'Comments',
+    categoryId: 'DIC_kwDOVUezCs4DKTFA',
+  },
+
   /** Repositories shown on the About page are fetched from GitHub at build time. */
   portfolio: {
     maxShownReposCount: 6,

@@ -17,12 +17,19 @@ humour, but the words do the work.
 
 - The toggle remembers the visitor's choice (local storage, no cookie).
 - The site starts in dark mode, regardless of the OS setting, until the visitor chooses otherwise.
-- The theme is set before first paint (inline script in `<head>`) to avoid a flash of the wrong theme.
+- The theme is set before first paint (`public/scripts/theme-init.js`, loaded as a small blocking
+  file in `<head>` rather than inline, for the CSP) to avoid a flash of the wrong theme.
+- The toggle is a plain Astro component with a few lines of script (no framework), and it reserves
+  its space so nothing shifts when it appears.
+- `<meta name="theme-color">` (the browser toolbar colour on phones) follows the theme: `--bg` of
+  each theme, set by `theme-init.js` on load and by the toggle on click. Change all three together.
 
 ## Palette
 
 Tokens are CSS custom properties in `packages/ui/src/styles/tokens.css`. Every text colour below
-meets WCAG AA (4.5:1) against `--bg` in its theme. Re-check whenever a value changes.
+meets WCAG AA (4.5:1) against `--bg` in its theme. Unit tests
+(`packages/ui/src/styles/tokens.test.ts`) check every text/background pair in both themes, and the
+build runs them before every deploy.
 
 | Token | Night (default) | Day | Role |
 | --- | --- | --- | --- |
@@ -45,11 +52,26 @@ All fonts are self-hosted through Fontsource packages, so no request ever goes t
 | Role | Font | Notes |
 | --- | --- | --- |
 | Headings | Cormorant Garamond (600, 700) | High-contrast serif with a "proclamation" feel |
-| Body | Source Serif 4 (variable) | Highly readable text serif, 19px, measure about 68 characters |
+| Body | Source Serif 4 (variable) | Text serif, 18px on phones to 21px on wide screens |
 | UI and meta | System sans-serif, often in small caps | Navigation, dates, labels |
 | Code | JetBrains Mono (variable) | Clear `0/O` and `1/l` distinction |
 
 Code blocks use the `rose-pine` Shiki theme in both modes.
+
+## Layout
+
+- One centred reading column of about 70 characters, with equal space on both sides.
+- Code blocks and tables stay in the column; long code lines scroll sideways.
+- Only the home-page heading and the About page's repo cards may grow wider (`.breakout`).
+- The footer sits at the bottom of short pages and is pushed down by long ones.
+- External links get a small ↗ (hidden from screen readers) and open in the same tab.
+
+## Social preview cards
+
+Generated per post at build time (`apps/council/src/lib/og.ts`), 1200×630: wax-seal red bar on top,
+the "LC" seal and LEMMINI COUNCIL in brass, the title in Cormorant, the description in Source Serif,
+and a brass rule with the date and `lemminicouncil.org`. No artwork needed; the commissioned sprites
+can be added to the template later.
 
 ## Motifs
 
@@ -69,6 +91,7 @@ Council's branding.
 
 - WCAG 2.2 AA contrast in both themes (checked, not assumed)
 - Visible focus styles (brass outline)
-- Semantic HTML first. Vue islands must be keyboard-operable.
+- Semantic HTML first. Interactive parts must be keyboard-operable.
+- ASCII art (404 page, Konami lemming) is `aria-hidden`; motion is skipped for reduced-motion users.
 - Images have meaningful alt text. Decorative sprites use `aria-hidden`.
 - Embed placeholders are real buttons with descriptive labels.

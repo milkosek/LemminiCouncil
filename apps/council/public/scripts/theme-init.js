@@ -1,9 +1,11 @@
-// Night is the default theme. Apply a saved "day" choice before the page paints.
-// Loaded as a small blocking file (not inline) so the Content-Security-Policy can stay strict.
+// Runs before first paint (see BaseLayout.astro): applies the saved theme so the page doesn't
+// flash dark before switching. The theme-color values must match --bg in packages/ui tokens.css
+// and the toggle script in ThemeToggle.astro.
 try {
   if (localStorage.getItem('lc-theme') === 'day') {
     document.documentElement.dataset.theme = 'day';
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#f4ecdc');
   }
 } catch {
-  // Storage unavailable (private mode, blocked site data): stay on night.
+  /* stay on night */
 }

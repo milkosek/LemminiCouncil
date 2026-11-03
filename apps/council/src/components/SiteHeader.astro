@@ -1,6 +1,13 @@
 ---
 import ThemeToggle from '@lemmini/ui/components/ThemeToggle.astro';
-import { nav, site } from '../site.config';
+import { getPublishedPosts, groupBySeries } from '../lib/posts';
+import { nav as baseNav, site } from '../site.config';
+
+// "Series" appears in the menu only once at least one series exists.
+const hasSeries = groupBySeries(await getPublishedPosts()).length > 0;
+const nav = hasSeries
+  ? [...baseNav.slice(0, 1), { href: '/series/', label: 'Series' }, ...baseNav.slice(1)]
+  : baseNav;
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || path.startsWith(href);

@@ -17,14 +17,15 @@ Popular isn't the same as right. The Council's job is to stop and work out which
 
 ## Status
 
-Early days. The site scaffold is in place, and the first posts are being written.
+Live at [lemminicouncil.org](https://lemminicouncil.org). The first post is out; more are being
+written.
 
 ## Built with
 
 - [Astro](https://astro.build): static pages, with posts written in Markdown/MDX
-- [Vue 3](https://vuejs.org): only for the parts that need to be interactive
+- [Vue 3](https://vuejs.org): for the click-to-load embed player; everything else is small scripts
 - TypeScript in a pnpm workspaces monorepo
-- Cloudflare Pages for hosting
+- Cloudflare Workers (static assets) for hosting
 
 The site follows its own advice: no trackers, no dark patterns, and it reads fine without JavaScript.
 
@@ -46,7 +47,10 @@ pnpm format       # Prettier
 
 Posts live in `apps/council/src/content/posts/`. Set `draft: true` in a post's frontmatter to keep
 it out of production. Keep each `description` between 100 and 160 characters: it's what search
-results and link previews show, and the build warns when it's outside that range.
+results and link previews show, and the build warns when it's outside that range. For a multi-part
+series, give the posts the same `series` name and a `seriesOrder` (see
+[Architecture → Series](docs/ARCHITECTURE.md#series)). Pictures and optional post banners go in
+`posts/images/<post-id>/` (see [Architecture → Images in posts](docs/ARCHITECTURE.md#images-in-posts)).
 
 ## Repository layout
 
@@ -62,7 +66,7 @@ docs/             project documentation
 - [Vision](docs/VISION.md): why this exists and where it's going
 - [Architecture](docs/ARCHITECTURE.md): repo layout, stack, hosting and content model
 - [Design](docs/DESIGN.md): the visual identity, "The Council Chamber at Night"
-- [Deployment](docs/DEPLOYMENT.md): Cloudflare Pages setup
+- [Deployment](docs/DEPLOYMENT.md): Cloudflare Workers, domain, headers and dependencies
 
 ## Licence
 

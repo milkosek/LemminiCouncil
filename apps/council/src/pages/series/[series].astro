@@ -1,0 +1,102 @@
+---
+import FormattedDate from '../../components/FormattedDate.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  getPublishedPosts,
+  groupBySeries,
+  postUrl,
+  readingTime,
+  type Series,
+} from '../../lib/posts';
+
+export async function getStaticPaths() {
+  return groupBySeries(await getPublishedPosts()).map((series) => ({
+    params: { series: series.slug },
+    props: { series },
+  }));
+}
+
+interface Props {
+  series: Series;
+}
+
+const { series } = Astro.props;
+const description = `A ${series.posts.length}-part series on the Lemmini Council.`;
+---
+
+<BaseLayout title={series.name} description={description}>
+  <p class="eyebrow"><a href="/series/">Series</a></p>
+  <h1>{series.name}</h1>
+  <p class="lede">{description} Read in order.</p>
+
+  <ol class="parts">
+    {
+      series.posts.map((post, index) => (
+        <li class="part">
+          <span class="part__number" aria-hidden="true">
+            {index + 1}
+          </span>
+          <div>
+            <h2 class="part__title">
+              <a href={postUrl(post)}>{post.data.title}</a>
+            </h2>
+            <p class="part__meta">
+              <FormattedDate date={post.data.published} /> · {readingTime(post)} min read
+            </p>
+            <p class="part__description">{post.data.description}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</BaseLayout>
+
+<style>
+  .parts {
+    display: grid;
+    gap: var(--space-8);
+    margin: var(--space-12) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .part {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: var(--space-4);
+  }
+
+  .part__number {
+    color: var(--brass);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .part__title {
+    margin: 0 0 var(--space-1);
+    font-size: var(--text-xl);
+  }
+
+  .part__title a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .part__title a:hover {
+    color: var(--accent);
+  }
+
+  .part__meta {
+    margin: 0 0 var(--space-2);
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+
+  .part__description {
+    margin: 0;
+    color: var(--text-muted);
+  }
+</style>

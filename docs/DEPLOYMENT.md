@@ -2,7 +2,8 @@
 
 The Council site is a fully static build served by **Cloudflare Workers** (static assets, no server
 code). Cloudflare recommends Workers over Pages for new projects. Every push to `main` deploys to
-production. With preview builds on, other branches get their own preview URL.
+production. Other branches are not built (preview builds are off): check changes locally with
+`pnpm build && pnpm preview` before merging.
 
 > Commit `pnpm-lock.yaml`. The build uses `--frozen-lockfile`, so it fails if the lockfile is
 > missing or out of date.
@@ -22,9 +23,8 @@ Create the project under **Workers & Pages → Create application → Import a r
 | Project name | `lemmini-council` (must match `name` in `wrangler.jsonc`) |
 | Build command | `pnpm install --frozen-lockfile && pnpm test && pnpm --filter @lemmini/council build` |
 | Deploy command | `npx wrangler deploy` |
-| Preview command | Leave the default the dashboard fills in |
 | Path | `/` (repo root, so the pnpm workspace and `wrangler.jsonc` are found) |
-| Preview builds | On |
+| Builds for non-production branches | Off (no preview deployments) |
 | Cloudflare Access | Off (the site is public) |
 
 The build runs the unit tests first, including the colour-contrast checks, so a failing test stops
@@ -54,13 +54,28 @@ Until then, the site is available at `lemmini-council.<your-subdomain>.workers.d
 
 ## Headers
 
-`apps/council/public/_headers` sets security headers and long-term caching for hashed assets.
+`apps/council/public/_headers` sets security headers and long-term caching for hashed assets:
+
+| Header | Purpose |
+| --- | --- |
+| `Strict-Transport-Security: max-age=31536000; includeSubDomains` | HTTPS only, remembered by browsers for a year (with "Always Use HTTPS" in Cloudflare for first visits) |
+| `X-Content-Type-Options: nosniff` | no guessing file types |
+| `X-Frame-Options: DENY` + CSP `frame-ancestors 'none'` | the site can't be framed by others |
+| `Referrer-Policy: strict-origin-when-cross-origin` | other sites only see the domain, not the page |
+| `Permissions-Policy` | camera, microphone, location and ad topics off |
+| `Cross-Origin-Opener-Policy: same-origin` | isolates the page from windows opened by others |
+
+HSTS is deliberately not `preload`ed: preloading is hard to undo and needs every future subdomain to
+be HTTPS from day one. It can be added later.
+
+Static `.txt` files are served without a charset, so `humans.txt` starts with a UTF-8 byte-order
+mark (kept by `.editorconfig`) to show non-ASCII characters correctly.
 
 The Content-Security-Policy comes in two parts that browsers enforce together:
 
 - A `<meta>` tag Astro adds to every page at build time (`security.csp` in `astro.config.mjs`).
   Astro hashes its own scripts and styles; everything else must come from the site itself, apart
-  from the YouTube and Spotify players, which are allowed as frames.
+  from the YouTube and Spotify players and giscus comments, which are allowed as frames.
 - A `Content-Security-Policy` header in `_headers` for what a `<meta>` tag can't set
   (`frame-ancestors`).
 
@@ -82,7 +97,8 @@ The main risk from a compromised package is to the build machine and the develop
 
 - **Dependabot** (`.github/dependabot.yml`): weekly grouped PRs for releases at least 5 days old
   (14 for major versions), separate PRs for security fixes. Alerts and malware alerts are on in
-  the repo settings. Nothing is merged automatically; Cloudflare builds a preview for each PR.
+  the repo settings. Nothing is merged automatically. Cloudflare doesn't build PR branches, so check a dependency PR
+  locally (`pnpm install && pnpm test && pnpm build`) before merging it.
 - **pnpm** (`pnpm-workspace.yaml`): install scripts only for esbuild and sharp, and the install
   fails on any other (`strictDepBuilds`); no versions younger than 3 days (`minimumReleaseAge`);
   fail if a package's publishing trust drops (`trustPolicy`); transitive dependencies only from npm

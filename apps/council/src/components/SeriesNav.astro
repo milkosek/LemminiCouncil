@@ -1,0 +1,156 @@
+---
+/**
+ * Navigation for a post that belongs to a series.
+ * - position="top": "Part 2 of 4 in <series>", with a collapsible list of all parts.
+ * - position="bottom": previous / next part.
+ */
+import { getPublishedPosts, groupBySeries, postUrl, seriesUrl, type Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  position: 'top' | 'bottom';
+}
+
+const { post, position } = Astro.props;
+const series = groupBySeries(await getPublishedPosts()).find((s) =>
+  s.posts.some((p) => p.id === post.id),
+);
+const index = series ? series.posts.findIndex((p) => p.id === post.id) : -1;
+const previous = series && index > 0 ? series.posts[index - 1] : undefined;
+const next = series && index >= 0 ? series.posts[index + 1] : undefined;
+---
+
+{
+  series && position === 'top' && (
+    <nav class="series-nav" aria-label={`Series: ${series.name}`} data-pagefind-ignore>
+      <details>
+        <summary>
+          <span class="series-nav__part">
+            Part {index + 1} of {series.posts.length}
+          </span>{' '}
+          in the series <a href={seriesUrl(series)}>{series.name}</a>
+        </summary>
+        <ol class="series-nav__list">
+          {series.posts.map((part) => (
+            <li>
+              {part.id === post.id ? (
+                <span aria-current="page">{part.data.title}</span>
+              ) : (
+                <a href={postUrl(part)}>{part.data.title}</a>
+              )}
+            </li>
+          ))}
+        </ol>
+      </details>
+    </nav>
+  )
+}
+
+{
+  series && position === 'bottom' && (previous || next) && (
+    <nav class="series-pager" aria-label={`More from ${series.name}`} data-pagefind-ignore>
+      {previous ? (
+        <a class="series-pager__link" href={postUrl(previous)} rel="prev">
+          <span class="series-pager__label">← Previous part</span>
+          <span class="series-pager__title">{previous.data.title}</span>
+        </a>
+      ) : (
+        <span />
+      )}
+      {next && (
+        <a class="series-pager__link series-pager__link--next" href={postUrl(next)} rel="next">
+          <span class="series-pager__label">Next part →</span>
+          <span class="series-pager__title">{next.data.title}</span>
+        </a>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .series-nav {
+    margin: 0 0 var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    border: var(--rule);
+    border-left: 3px solid var(--brass);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+
+  .series-nav summary {
+    cursor: pointer;
+    color: var(--text-muted);
+  }
+
+  .series-nav__part {
+    color: var(--brass);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.08em;
+    font-size: 1rem;
+  }
+
+  .series-nav__list {
+    margin: var(--space-3) 0 0;
+    padding-left: var(--space-6);
+  }
+
+  .series-nav__list li {
+    margin: var(--space-1) 0;
+  }
+
+  .series-nav__list [aria-current='page'] {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .series-pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-top: var(--space-12);
+  }
+
+  .series-pager__link {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    border: var(--rule);
+    border-radius: var(--radius);
+    text-decoration: none;
+  }
+
+  .series-pager__link:hover {
+    border-color: var(--brass);
+  }
+
+  .series-pager__link--next {
+    grid-column: 2;
+    text-align: right;
+  }
+
+  .series-pager__label {
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+
+  .series-pager__title {
+    color: var(--text);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 40rem) {
+    .series-pager {
+      grid-template-columns: 1fr;
+    }
+
+    .series-pager__link--next {
+      grid-column: 1;
+    }
+  }
+</style>

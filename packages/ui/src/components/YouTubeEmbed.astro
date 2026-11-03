@@ -10,10 +10,13 @@
  *   <YouTubeEmbed id="VIDEO_ID" />
  *   <YouTubeEmbed id="VIDEO_ID" title="Custom title" start={42} />
  *
+ * A wrong or removed video ID doesn't break the build: it logs an `[embeds]` warning and the
+ * placeholder renders without a thumbnail (the link and player still point at the given ID).
+ *
  * Requires `i.ytimg.com` in `image.domains` in astro.config.
  */
-import { Image } from 'astro:assets';
 import ClickToLoad from './ClickToLoad.vue';
+import { embedImage, warnEmbed } from '../lib/embed-image';
 import { fetchOEmbed, youTubeOEmbedUrl } from '../lib/oembed';
 
 interface Props {
@@ -26,18 +29,36 @@ interface Props {
 }
 
 const { id, title: titleOverride, start } = Astro.props;
+const label = `YouTube video "${id}"`;
 
-const oembed = titleOverride ? null : await fetchOEmbed(youTubeOEmbedUrl(id));
+// Video IDs are 11 characters of A-Z, a-z, 0-9, - and _. Anything else is a typo (often a whole
+// URL pasted in), so don't even ask YouTube.
+const validId = /^[\w-]{11}$/.test(id);
+if (!validId) {
+  warnEmbed(`${label} doesn't look like a video ID (11 characters, e.g. dQw4w9WgXcQ).`);
+}
+
+// Always look the video up, even with a title override: it's also how we know the ID exists.
+const oembed = validId ? await fetchOEmbed(youTubeOEmbedUrl(id)) : null;
+if (validId && !oembed) {
+  warnEmbed(`${label} not found (wrong ID, private or removed, or YouTube unreachable).`);
+}
+
 const title = titleOverride ?? oembed?.title ?? 'YouTube video';
+const thumbnailUrl = `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`;
+const thumbnail = oembed ? await embedImage(thumbnailUrl, 480, 360, label) : null;
 
 const params = new URLSearchParams({ autoplay: '1', rel: '0' });
 if (start) params.set('start', String(start));
 
 const src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?${params}`;
 const href = `https://www.youtube.com/watch?v=${encodeURIComponent(id)}${start ? `&t=${start}s` : ''}`;
-const thumbnail = `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`;
 ---
 
 <ClickToLoad client:visible provider="YouTube" src={src} title={title} href={href}>
-  <Image src={thumbnail} alt="" width={480} height={360} loading="lazy" />
+  {
+    thumbnail && (
+      <img src={thumbnail.src} {...thumbnail.attributes} alt="" loading="lazy" decoding="async" />
+    )
+  }
 </ClickToLoad>

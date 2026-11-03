@@ -62,3 +62,36 @@ export function groupByTag(posts: Post[]): { tag: string; slug: string; posts: P
 export function postUrl(post: Post): string {
   return `/posts/${post.id}/`;
 }
+
+export interface Series {
+  name: string;
+  slug: string;
+  /** Parts in reading order: by seriesOrder, then by publication date. */
+  posts: Post[];
+}
+
+/** Every series with its parts in reading order, sorted by series name. */
+export function groupBySeries(posts: Post[]): Series[] {
+  const map = new Map<string, Series>();
+  for (const post of posts) {
+    const name = post.data.series;
+    if (!name) continue;
+    const slug = tagSlug(name);
+    const entry = map.get(slug) ?? { name, slug, posts: [] };
+    entry.posts.push(post);
+    map.set(slug, entry);
+  }
+  for (const series of map.values()) {
+    series.posts.sort(
+      (a, b) =>
+        (a.data.seriesOrder ?? Number.MAX_SAFE_INTEGER) -
+          (b.data.seriesOrder ?? Number.MAX_SAFE_INTEGER) ||
+        a.data.published.getTime() - b.data.published.getTime(),
+    );
+  }
+  return [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export function seriesUrl(series: Pick<Series, 'slug'>): string {
+  return `/series/${series.slug}/`;
+}

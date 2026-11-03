@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, groupBySeries, seriesUrl } from '../../lib/posts';
+
+const allSeries = groupBySeries(await getPublishedPosts());
+---
+
+<BaseLayout title="Series" description="Posts that belong together, read in order.">
+  <h1>Series</h1>
+  {
+    allSeries.length === 0 ? (
+      <p class="empty-state">No series yet. The Council speaks in single sessions for now.</p>
+    ) : (
+      <ul class="series-index">
+        {allSeries.map((series) => (
+          <li>
+            <h2>
+              <a href={seriesUrl(series)}>{series.name}</a>
+            </h2>
+            <p>
+              {series.posts.length} {series.posts.length === 1 ? 'part' : 'parts'}, starting with
+              “{series.posts[0]?.data.title}”
+            </p>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .series-index {
+    display: grid;
+    gap: var(--space-8);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .series-index h2 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xl);
+  }
+
+  .series-index h2 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .series-index h2 a:hover {
+    color: var(--accent);
+  }
+
+  .series-index p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+</style>

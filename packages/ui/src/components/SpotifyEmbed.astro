@@ -19,10 +19,13 @@
  *                   shows, where a taller player lists more tracks. A single track never
  *                   grows past the large layout, so tracks and episodes are capped at 352px.
  *
+ * A malformed or dead link doesn't break the build: it logs an `[embeds]` warning and the
+ * placeholder renders without cover art.
+ *
  * Requires Spotify image hosts in `image.remotePatterns` in astro.config.
  */
-import { Image } from 'astro:assets';
 import ClickToLoad from './ClickToLoad.vue';
+import { embedImage, warnEmbed } from '../lib/embed-image';
 import { fetchOEmbed, spotifyOEmbedUrl } from '../lib/oembed';
 
 interface Props {
@@ -36,15 +39,29 @@ interface Props {
 
 const { url, title: titleOverride, size } = Astro.props;
 
+const label = `Spotify link "${url}"`;
+
 // Keep only the path (/track/ID, /album/ID, …) and drop share-tracking query params like ?si=
-const parsed = new URL(url);
-const path = parsed.pathname.replace(/^\/intl-[a-z]+/, '');
+let path = '';
+try {
+  const parsed = new URL(url);
+  if (parsed.hostname === 'open.spotify.com') {
+    path = parsed.pathname.replace(/^\/intl-[a-z]+/, '');
+  }
+} catch {
+  // Not a URL at all; handled below.
+}
+if (!path) warnEmbed(`${label} is not an open.spotify.com share link.`);
 const kind = path.split('/')[1] ?? 'track';
 const cleanUrl = `https://open.spotify.com${path}`;
 
-const oembed = await fetchOEmbed(spotifyOEmbedUrl(cleanUrl));
+const oembed = path ? await fetchOEmbed(spotifyOEmbedUrl(cleanUrl)) : null;
+if (path && !oembed) {
+  warnEmbed(`${label} not found (wrong link, removed, or Spotify unreachable).`);
+}
 const title = titleOverride ?? oembed?.title ?? 'Spotify';
-const cover = oembed?.thumbnail_url;
+const coverUrl = oembed?.thumbnail_url;
+const cover = coverUrl ? await embedImage(coverUrl, 300, 300, label) : null;
 
 const src = `https://open.spotify.com/embed${path}`;
 const SIZES = { compact: 152, large: 352 } as const;
@@ -60,9 +77,13 @@ if (isSingle) height = Math.min(height, SIZES.large);
   provider="Spotify"
   src={src}
   title={title}
-  href={cleanUrl}
+  href={path ? cleanUrl : url}
   height={height}
   action="Load Spotify player"
 >
-  {cover && <Image src={cover} alt="" width={300} height={300} loading="lazy" />}
+  {
+    cover && (
+      <img src={cover.src} {...cover.attributes} alt="" loading="lazy" decoding="async" />
+    )
+  }
 </ClickToLoad>
