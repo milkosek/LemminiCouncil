@@ -10,6 +10,7 @@
  *   <YouTubeEmbed id="VIDEO_ID" />
  *   <YouTubeEmbed id="VIDEO_ID" title="Custom title" start={42} />
  *
+ * Uses the HD thumbnail when the video has one (several sizes), else YouTube's standard one.
  * A wrong or removed video ID doesn't break the build: it logs an `[embeds]` warning and the
  * placeholder renders without a thumbnail (the link and player still point at the given ID).
  *
@@ -45,8 +46,18 @@ if (validId && !oembed) {
 }
 
 const title = titleOverride ?? oembed?.title ?? 'YouTube video';
-const thumbnailUrl = `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`;
-const thumbnail = oembed ? await embedImage(thumbnailUrl, 480, 360, label) : null;
+// Thumbnails: the 1280×720 one exists only for HD videos, so fall back to the 480×360 one (4:3
+// with black bars, which the 16:9 frame crops away). Several sizes, so phones load a small one.
+const thumbnailBase = `https://i.ytimg.com/vi/${encodeURIComponent(id)}`;
+const sizes = '(min-width: 48rem) 46rem, 100vw';
+const thumbnail = oembed
+  ? ((await embedImage(
+      `${thumbnailBase}/maxresdefault.jpg`,
+      { width: 1280, height: 720, widths: [640, 960, 1280], sizes },
+      label,
+      { quiet: true },
+    )) ?? (await embedImage(`${thumbnailBase}/hqdefault.jpg`, { width: 480, height: 360 }, label)))
+  : null;
 
 const params = new URLSearchParams({ autoplay: '1', rel: '0' });
 if (start) params.set('start', String(start));
@@ -58,7 +69,15 @@ const href = `https://www.youtube.com/watch?v=${encodeURIComponent(id)}${start ?
 <ClickToLoad client:visible provider="YouTube" src={src} title={title} href={href}>
   {
     thumbnail && (
-      <img src={thumbnail.src} {...thumbnail.attributes} alt="" loading="lazy" decoding="async" />
+      <img
+        src={thumbnail.src}
+        srcset={thumbnail.srcSet.attribute || undefined}
+        sizes={thumbnail.srcSet.attribute ? sizes : undefined}
+        {...thumbnail.attributes}
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
     )
   }
 </ClickToLoad>

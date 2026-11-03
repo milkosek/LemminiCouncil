@@ -61,7 +61,7 @@ if (path && !oembed) {
 }
 const title = titleOverride ?? oembed?.title ?? 'Spotify';
 const coverUrl = oembed?.thumbnail_url;
-const cover = coverUrl ? await embedImage(coverUrl, 300, 300, label) : null;
+const cover = coverUrl ? await embedImage(coverUrl, { width: 300, height: 300 }, label) : null;
 
 const src = `https://open.spotify.com/embed${path}`;
 const SIZES = { compact: 152, large: 352 } as const;
