@@ -18,25 +18,25 @@ production. Other branches are not built (preview builds are off): check changes
 
 Create the project under **Workers & Pages → Create application → Import a repository**.
 
-| Setting | Value |
-| --- | --- |
-| Project name | `lemmini-council` (must match `name` in `wrangler.jsonc`) |
-| Build command | `pnpm install --frozen-lockfile && pnpm test && pnpm --filter @lemmini/council build` |
-| Deploy command | `npx wrangler deploy` |
-| Path | `/` (repo root, so the pnpm workspace and `wrangler.jsonc` are found) |
-| Builds for non-production branches | Off (no preview deployments) |
-| Cloudflare Access | Off (the site is public) |
+| Setting                            | Value                                                                                 |
+| ---------------------------------- | ------------------------------------------------------------------------------------- |
+| Project name                       | `lemmini-council` (must match `name` in `wrangler.jsonc`)                             |
+| Build command                      | `pnpm install --frozen-lockfile && pnpm test && pnpm --filter @lemmini/council build` |
+| Deploy command                     | `npx wrangler deploy`                                                                 |
+| Path                               | `/` (repo root, so the pnpm workspace and `wrangler.jsonc` are found)                 |
+| Builds for non-production branches | Off (no preview deployments)                                                          |
+| Cloudflare Access                  | Off (the site is public)                                                              |
 
 The build runs the unit tests first, including the colour-contrast checks, so a failing test stops
 the deploy.
 
 ### Build variables
 
-| Variable | Value | Why |
-| --- | --- | --- |
-| `NODE_VERSION` | `26` | Matches `.nvmrc` |
-| `PNPM_VERSION` | `10.28.0` | Must match `packageManager` in the root `package.json` |
-| `GITHUB_TOKEN` | *(optional, encrypted)* | Raises the GitHub API rate limit for the About page's repo list. Without it, requests are anonymous (60 per hour), which is plenty for a few builds a day |
+| Variable       | Value                   | Why                                                                                                                                                       |
+| -------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NODE_VERSION` | `26`                    | Matches `.nvmrc`                                                                                                                                          |
+| `PNPM_VERSION` | `12.23.0`               | Must match `packageManager` in the root `package.json`                                                                                                    |
+| `GITHUB_TOKEN` | _(optional, encrypted)_ | Raises the GitHub API rate limit for the About page's repo list. Without it, requests are anonymous (60 per hour), which is plenty for a few builds a day |
 
 ## Domain
 
@@ -56,14 +56,14 @@ Until then, the site is available at `lemmini-council.<your-subdomain>.workers.d
 
 `apps/council/public/_headers` sets security headers and long-term caching for hashed assets:
 
-| Header | Purpose |
-| --- | --- |
+| Header                                                           | Purpose                                                                                                |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `Strict-Transport-Security: max-age=31536000; includeSubDomains` | HTTPS only, remembered by browsers for a year (with "Always Use HTTPS" in Cloudflare for first visits) |
-| `X-Content-Type-Options: nosniff` | no guessing file types |
-| `X-Frame-Options: DENY` + CSP `frame-ancestors 'none'` | the site can't be framed by others |
-| `Referrer-Policy: strict-origin-when-cross-origin` | other sites only see the domain, not the page |
-| `Permissions-Policy` | camera, microphone, location and ad topics off |
-| `Cross-Origin-Opener-Policy: same-origin` | isolates the page from windows opened by others |
+| `X-Content-Type-Options: nosniff`                                | no guessing file types                                                                                 |
+| `X-Frame-Options: DENY` + CSP `frame-ancestors 'none'`           | the site can't be framed by others                                                                     |
+| `Referrer-Policy: strict-origin-when-cross-origin`               | other sites only see the domain, not the page                                                          |
+| `Permissions-Policy`                                             | camera, microphone, location and ad topics off                                                         |
+| `Cross-Origin-Opener-Policy: same-origin`                        | isolates the page from windows opened by others                                                        |
 
 HSTS is deliberately not `preload`ed: preloading is hard to undo and needs every future subdomain to
 be HTTPS from day one. It can be added later.

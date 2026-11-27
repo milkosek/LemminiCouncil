@@ -79,10 +79,13 @@ The Council also keeps an old procedure on the books:  ↑ ↑ ↓ ↓ ← → �
     }
 
     window.setTimeout(() => toast.remove(), 3500);
-    window.setTimeout(() => {
-      walker?.remove();
-      active = false;
-    }, prefersReducedMotion ? 3500 : 8000);
+    window.setTimeout(
+      () => {
+        walker?.remove();
+        active = false;
+      },
+      prefersReducedMotion ? 3500 : 8000,
+    );
   }
 
   document.addEventListener('keydown', (event) => {

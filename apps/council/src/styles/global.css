@@ -37,6 +37,21 @@ body {
   border-radius: var(--radius);
 }
 
+/* The Council seal beside a page's heading (About, 404), like a letterhead. */
+.page-seal {
+  float: right;
+  width: 6rem;
+  height: auto;
+  margin: 0 0 var(--space-4) var(--space-6);
+  border-radius: 0 !important;
+}
+
+@media (min-width: 40rem) {
+  .page-seal {
+    width: 9rem;
+  }
+}
+
 .skip-link {
   position: absolute;
   left: var(--space-4);
@@ -116,7 +131,12 @@ body {
  * The `/ ""` gives the arrow empty alt text, so screen readers don't announce it.
  * Opt out on a specific link with class="no-external-icon".
  */
-a[href^='http']:not([href*='//lemminicouncil.org'], [href*='.lemminicouncil.org'], .ctl__facade, .no-external-icon)::after {
+a[href^='http']:not(
+    [href*='//lemminicouncil.org'],
+    [href*='.lemminicouncil.org'],
+    .ctl__facade,
+    .no-external-icon
+  )::after {
   content: '↗';
   content: '↗' / '';
   display: inline-block; /* keeps the link underline off the arrow */

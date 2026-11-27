@@ -20,52 +20,48 @@ const previous = series && index > 0 ? series.posts[index - 1] : undefined;
 const next = series && index >= 0 ? series.posts[index + 1] : undefined;
 ---
 
-{
-  series && position === 'top' && (
-    <nav class="series-nav" aria-label={`Series: ${series.name}`} data-pagefind-ignore>
-      <details>
-        <summary>
-          <span class="series-nav__part">
-            Part {index + 1} of {series.posts.length}
-          </span>{' '}
-          in the series <a href={seriesUrl(series)}>{series.name}</a>
-        </summary>
-        <ol class="series-nav__list">
-          {series.posts.map((part) => (
-            <li>
-              {part.id === post.id ? (
-                <span aria-current="page">{part.data.title}</span>
-              ) : (
-                <a href={postUrl(part)}>{part.data.title}</a>
-              )}
-            </li>
-          ))}
-        </ol>
-      </details>
-    </nav>
-  )
-}
+{series && position === 'top' && (
+  <nav class="series-nav" aria-label={`Series: ${series.name}`} data-pagefind-ignore>
+    <details>
+      <summary>
+        <span class="series-nav__part">
+          Part {index + 1} of {series.posts.length}
+        </span>{' '}
+        in the series <a href={seriesUrl(series)}>{series.name}</a>
+      </summary>
+      <ol class="series-nav__list">
+        {series.posts.map((part) => (
+          <li>
+            {part.id === post.id ? (
+              <span aria-current="page">{part.data.title}</span>
+            ) : (
+              <a href={postUrl(part)}>{part.data.title}</a>
+            )}
+          </li>
+        ))}
+      </ol>
+    </details>
+  </nav>
+)}
 
-{
-  series && position === 'bottom' && (previous || next) && (
-    <nav class="series-pager" aria-label={`More from ${series.name}`} data-pagefind-ignore>
-      {previous ? (
-        <a class="series-pager__link" href={postUrl(previous)} rel="prev">
-          <span class="series-pager__label">← Previous part</span>
-          <span class="series-pager__title">{previous.data.title}</span>
-        </a>
-      ) : (
-        <span />
-      )}
-      {next && (
-        <a class="series-pager__link series-pager__link--next" href={postUrl(next)} rel="next">
-          <span class="series-pager__label">Next part →</span>
-          <span class="series-pager__title">{next.data.title}</span>
-        </a>
-      )}
-    </nav>
-  )
-}
+{series && position === 'bottom' && (previous || next) && (
+  <nav class="series-pager" aria-label={`More from ${series.name}`} data-pagefind-ignore>
+    {previous ? (
+      <a class="series-pager__link" href={postUrl(previous)} rel="prev">
+        <span class="series-pager__label">← Previous part</span>
+        <span class="series-pager__title">{previous.data.title}</span>
+      </a>
+    ) : (
+      <span />
+    )}
+    {next && (
+      <a class="series-pager__link series-pager__link--next" href={postUrl(next)} rel="next">
+        <span class="series-pager__label">Next part →</span>
+        <span class="series-pager__title">{next.data.title}</span>
+      </a>
+    )}
+  </nav>
+)}
 
 <style>
   .series-nav {

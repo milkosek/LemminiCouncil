@@ -7,21 +7,19 @@ const tags = groupByTag(await getPublishedPosts());
 
 <BaseLayout title="Tags" description="Posts by topic.">
   <h1>Tags</h1>
-  {
-    tags.length === 0 ? (
-      <p class="empty-state">No tags yet.</p>
-    ) : (
-      <ul class="tag-list tags-page">
-        {tags.map(({ tag, slug, posts }) => (
-          <li>
-            <a class="tag" href={`/tags/${slug}/`}>
-              {tag} <span class="count">({posts.length})</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    )
-  }
+  {tags.length === 0 ? (
+    <p class="empty-state">No tags yet.</p>
+  ) : (
+    <ul class="tag-list tags-page">
+      {tags.map(({ tag, slug, posts }) => (
+        <li>
+          <a class="tag" href={`/tags/${slug}/`}>
+            {tag} <span class="count">({posts.length})</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
 </BaseLayout>
 
 <style>

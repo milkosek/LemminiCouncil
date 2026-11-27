@@ -33,41 +33,35 @@ const {
   image={`/og/posts/${post.id}.png`}
 >
   <article class="post" data-pagefind-body>
-    {
-      heroImage && (
-        <Image
-          class="post__hero breakout"
-          src={heroImage}
-          alt={heroImageAlt ?? ''}
-          widths={[640, 960, 1280, 2048]}
-          sizes="(min-width: 70rem) 64rem, 100vw"
-          loading="eager"
-          fetchpriority="high"
-        />
-      )
-    }
+    {heroImage && (
+      <Image
+        class="post__hero breakout"
+        src={heroImage}
+        alt={heroImageAlt ?? ''}
+        widths={[640, 960, 1280, 2048]}
+        sizes="(min-width: 70rem) 64rem, 100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+    )}
     <header class="post__header">
-      {
-        series && (
-          <p class="eyebrow">
-            <a href={`/series/${tagSlug(series)}/`}>{series}</a>
-          </p>
-        )
-      }
+      {series && (
+        <p class="eyebrow">
+          <a href={`/series/${tagSlug(series)}/`}>{series}</a>
+        </p>
+      )}
       <h1 data-pagefind-meta="title">{title}</h1>
       <p class="lede">{description}</p>
       <p class="post__meta" data-pagefind-ignore>
         <FormattedDate date={published} />
-        {
-          updated && (
-            <>
-              <span aria-hidden="true">·</span>
-              <span>
-                Updated <FormattedDate date={updated} />
-              </span>
-            </>
-          )
-        }
+        {updated && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>
+              Updated <FormattedDate date={updated} />
+            </span>
+          </>
+        )}
         <span aria-hidden="true">·</span>
         <span>{readingTime(post)} min read</span>
         {draft && <strong class="post__draft">Draft: not published</strong>}
@@ -82,22 +76,20 @@ const {
 
     <SeriesNav post={post} position="bottom" />
 
-    {
-      tags.length > 0 && (
-        <footer class="post__footer" data-pagefind-ignore>
-          <h2 class="visually-hidden">Tags</h2>
-          <ul class="tag-list">
-            {tags.map((tag) => (
-              <li>
-                <a class="tag" href={`/tags/${tagSlug(tag)}/`} data-pagefind-filter="tag">
-                  {tag}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </footer>
-      )
-    }
+    {tags.length > 0 && (
+      <footer class="post__footer" data-pagefind-ignore>
+        <h2 class="visually-hidden">Tags</h2>
+        <ul class="tag-list">
+          {tags.map((tag) => (
+            <li>
+              <a class="tag" href={`/tags/${tagSlug(tag)}/`} data-pagefind-filter="tag">
+                {tag}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </footer>
+    )}
   </article>
 
   {/* Not on drafts: the first comment would create a public discussion for an unpublished post. */}

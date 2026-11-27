@@ -11,28 +11,26 @@ interface Props {
 const { posts, empty = 'The Council has not yet convened.' } = Astro.props;
 ---
 
-{
-  posts.length === 0 ? (
-    <p class="empty-state">{empty}</p>
-  ) : (
-    <ol class="post-list">
-      {posts.map((post) => (
-        <li class="post-list__item">
-          <p class="post-list__meta">
-            <FormattedDate date={post.data.published} />
-            <span aria-hidden="true">·</span>
-            <span>{readingTime(post)} min read</span>
-            {post.data.draft && <span class="post-list__draft">Draft</span>}
-          </p>
-          <h3 class="post-list__title">
-            <a href={postUrl(post)}>{post.data.title}</a>
-          </h3>
-          <p class="post-list__description">{post.data.description}</p>
-        </li>
-      ))}
-    </ol>
-  )
-}
+{posts.length === 0 ? (
+  <p class="empty-state">{empty}</p>
+) : (
+  <ol class="post-list">
+    {posts.map((post) => (
+      <li class="post-list__item">
+        <p class="post-list__meta">
+          <FormattedDate date={post.data.published} />
+          <span aria-hidden="true">·</span>
+          <span>{readingTime(post)} min read</span>
+          {post.data.draft && <span class="post-list__draft">Draft</span>}
+        </p>
+        <h3 class="post-list__title">
+          <a href={postUrl(post)}>{post.data.title}</a>
+        </h3>
+        <p class="post-list__description">{post.data.description}</p>
+      </li>
+    ))}
+  </ol>
+)}
 
 <style>
   .post-list {

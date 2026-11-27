@@ -1,0 +1,47 @@
+---
+/**
+ * The Lemmini Council seal, optimised by Astro into WebP at the sizes needed.
+ * `variant="compact"` is the version with the frame inside the disc: a clean circle that stays
+ * readable when small (header, icons). The full seal is for larger places.
+ *
+ * `sizes` says how wide the seal is shown, so the browser picks a fitting file. Decorative by
+ * default (empty alt): wherever it appears, the site name is already on the page.
+ */
+import { Image } from 'astro:assets';
+import type { HTMLAttributes } from 'astro/types';
+import seal from '../assets/brand/seal.png';
+import sealCompact from '../assets/brand/seal-compact.png';
+
+interface Props extends Omit<HTMLAttributes<'img'>, 'src' | 'alt' | 'sizes' | 'width' | 'height'> {
+  /** Displayed width, as for <img sizes>, e.g. "11rem" or "(min-width: 40rem) 9rem, 6rem". */
+  sizes: string;
+  /** Load straight away (above the fold) instead of lazily. */
+  eager?: boolean;
+  /** Also tell the browser it's the most important image on the page (home page hero). */
+  priority?: boolean;
+  /** Alt text, if the seal ever carries meaning on its own. */
+  alt?: string;
+  /** "full" (default) or "compact" (frame inside the circle, for small sizes). */
+  variant?: 'full' | 'compact';
+}
+
+const {
+  sizes,
+  eager = false,
+  priority = false,
+  alt = '',
+  variant = 'full',
+  ...attrs
+} = Astro.props;
+---
+
+<Image
+  {...attrs}
+  src={variant === 'compact' ? sealCompact : seal}
+  alt={alt}
+  widths={[64, 96, 144, 192, 288, 384, 576]}
+  sizes={sizes}
+  loading={eager || priority ? 'eager' : 'lazy'}
+  fetchpriority={priority ? 'high' : undefined}
+  decoding="async"
+/>

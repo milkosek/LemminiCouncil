@@ -24,38 +24,36 @@ const discussionsUrl = `https://github.com/${repo}/discussions`;
 const themeBase = new URL('/giscus/', Astro.site ?? 'https://lemminicouncil.org').href;
 ---
 
-{
-  enabled && (
-    <section class="comments" aria-labelledby="comments-heading" data-pagefind-ignore>
-      <h2 id="comments-heading" class="section-rule">
-        Discussion
-      </h2>
-      <div
-        class="comments__body"
-        data-comments
-        data-repo={repo}
-        data-repo-id={repoId}
-        data-category={category}
-        data-category-id={categoryId}
-        data-term={term}
-        data-theme-base={themeBase}
-      >
-        <div class="comments__facade">
-          <p>
-            Comments live in this site's GitHub Discussions and are shown here through giscus.
-            Nothing loads from GitHub or giscus until you ask. Posting needs a GitHub account.
-          </p>
-          <button type="button" class="comments__button" data-comments-load hidden>
-            Load comments
-          </button>
-          <p class="comments__alt">
-            <a href={discussionsUrl}>Or open the discussions on GitHub</a>
-          </p>
-        </div>
+{enabled && (
+  <section class="comments" aria-labelledby="comments-heading" data-pagefind-ignore>
+    <h2 id="comments-heading" class="section-rule">
+      Discussion
+    </h2>
+    <div
+      class="comments__body"
+      data-comments
+      data-repo={repo}
+      data-repo-id={repoId}
+      data-category={category}
+      data-category-id={categoryId}
+      data-term={term}
+      data-theme-base={themeBase}
+    >
+      <div class="comments__facade">
+        <p>
+          Comments live in this site's GitHub Discussions and are shown here through giscus. Nothing
+          loads from GitHub or giscus until you ask. Posting needs a GitHub account.
+        </p>
+        <button type="button" class="comments__button" data-comments-load hidden>
+          Load comments
+        </button>
+        <p class="comments__alt">
+          <a href={discussionsUrl}>Or open the discussions on GitHub</a>
+        </p>
       </div>
-    </section>
-  )
-}
+    </div>
+  </section>
+)}
 
 <script>
   const GISCUS = 'https://giscus.app';

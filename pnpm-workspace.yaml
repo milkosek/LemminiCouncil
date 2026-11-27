@@ -4,14 +4,15 @@ packages:
 
 # Supply-chain protection
 # ----------------------------------------------------------------------------------------------
-# pnpm 10 blocks dependency install scripts by default (the usual way malicious packages run).
-# Allow only the ones we need.
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
+# pnpm blocks dependency install scripts by default (the usual way malicious packages run).
+# Allow only the ones we need. (allowBuilds replaced onlyBuiltDependencies in pnpm 10.26; pnpm 11
+# removed the old setting.)
+allowBuilds:
+  esbuild: true
+  sharp: true
 
 # Fail the install (instead of warning) if a dependency wants to run a build script that isn't
-# reviewed above. Add new ones to onlyBuiltDependencies only after checking why they need it.
+# reviewed above. Add new ones to allowBuilds only after checking why they need it.
 strictDepBuilds: true
 
 # Don't install versions published less than 3 days ago. Poisoned releases are usually caught and

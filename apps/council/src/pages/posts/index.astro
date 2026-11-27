@@ -15,12 +15,10 @@ for (const post of posts) {
 <BaseLayout title="Posts" description="Every post the Council has published.">
   <h1>Posts</h1>
   {posts.length === 0 && <PostList posts={[]} />}
-  {
-    [...byYear.entries()].map(([year, yearPosts]) => (
-      <section>
-        <h2 class="section-rule">{year}</h2>
-        <PostList posts={yearPosts} />
-      </section>
-    ))
-  }
+  {[...byYear.entries()].map(([year, yearPosts]) => (
+    <section>
+      <h2 class="section-rule">{year}</h2>
+      <PostList posts={yearPosts} />
+    </section>
+  ))}
 </BaseLayout>

@@ -1,15 +1,19 @@
 ---
+import Seal from '../components/Seal.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { ARCHIVE_404 } from '../lib/ascii';
 ---
 
 <BaseLayout title="Not found" description="This page could not be found." noindex>
   <div class="prose">
+    <Seal class="page-seal" sizes="(min-width: 40rem) 9rem, 6rem" eager />
     <p class="eyebrow">Error 404</p>
     <h1>The Council has no record of this page.</h1>
     <p class="lede">It may have moved, or it may never have existed.</p>
     <pre class="archive-scene" aria-hidden="true" set:text={ARCHIVE_404} />
-    <p><a href="/">Return to the chamber →</a></p>
+    <p>
+      <a href="/">Return to the chamber →</a>
+    </p>
   </div>
 </BaseLayout>
 

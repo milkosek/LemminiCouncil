@@ -3,9 +3,13 @@
  *   /og/site.png
  *   /og/posts/<post-id>.png
  * Referenced from the og:image / twitter:image tags in BaseLayout.
+ *
+ * In `pnpm dev` there are also a few awkward sample cards (/og/dev/<name>.png) for checking the
+ * layout; /dev/cards/ shows them all. They're never built for production.
  */
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { renderCard, type CardContent } from '../../lib/og';
+import { DEV_SAMPLES } from '../../lib/og-samples';
 import { getPublishedPosts } from '../../lib/posts';
 import { site } from '../../site.config';
 
@@ -32,6 +36,12 @@ export const getStaticPaths = (async () => {
         }),
       } satisfies CardContent,
     })),
+    ...(import.meta.env.DEV
+      ? Object.entries(DEV_SAMPLES).map(([name, card]) => ({
+          params: { slug: `dev/${name}` },
+          props: card,
+        }))
+      : []),
   ];
 }) satisfies GetStaticPaths;
 

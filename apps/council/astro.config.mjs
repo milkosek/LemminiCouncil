@@ -4,11 +4,27 @@ import sitemap from '@astrojs/sitemap';
 import vue from '@astrojs/vue';
 import { defineConfig } from 'astro/config';
 
+/**
+ * Pages that exist only in `pnpm dev`, for checking things by eye. Never built or deployed.
+ * @returns {import('astro').AstroIntegration}
+ */
+function devPages() {
+  return {
+    name: 'lemmini-dev-pages',
+    hooks: {
+      'astro:config:setup': ({ command, injectRoute }) => {
+        if (command !== 'dev') return;
+        injectRoute({ pattern: '/dev/cards', entrypoint: './src/dev/cards.astro' });
+      },
+    },
+  };
+}
+
 export default defineConfig({
   site: 'https://lemminicouncil.org',
   trailingSlash: 'ignore',
 
-  integrations: [vue(), mdx(), sitemap()],
+  integrations: [vue(), mdx(), sitemap(), devPages()],
 
   // Remote images used by the embed placeholders are downloaded and optimised
   // at build time, so visitors load them from this site, not from the provider.

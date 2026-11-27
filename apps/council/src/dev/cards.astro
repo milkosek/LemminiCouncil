@@ -1,0 +1,78 @@
+---
+/**
+ * Dev-only: every social preview card on one page (/dev/cards/ in `pnpm dev`).
+ * Registered in astro.config.mjs (devPages), so it is never part of the production build.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts } from '../lib/posts';
+import { DEV_SAMPLES } from '../lib/og-samples';
+
+const posts = await getPublishedPosts(); // includes drafts in dev
+
+const groups = [
+  { heading: 'Site', cards: [{ label: 'Home page and other pages', src: '/og/site.png' }] },
+  {
+    heading: 'Posts',
+    cards: posts.map((post) => ({
+      label: `${post.data.title}${post.data.draft ? ' (draft)' : ''}`,
+      src: `/og/posts/${post.id}.png`,
+    })),
+  },
+  {
+    heading: 'Edge cases (dev only)',
+    cards: Object.keys(DEV_SAMPLES).map((name) => ({ label: name, src: `/og/dev/${name}.png` })),
+  },
+];
+---
+
+<BaseLayout title="Social cards" description="Every social preview card, for checking." noindex>
+  <div class="cards breakout">
+    <p class="eyebrow">Dev only</p>
+    <h1>Social preview cards</h1>
+    <p class="lede">
+      Shown at about the width LinkedIn uses. Click one for the full 1200×630 image. Cards are
+      rendered on request, so the first load takes a moment.
+    </p>
+    {groups.map(({ heading, cards }) => (
+      <section>
+        <h2 class="section-rule">{heading}</h2>
+        <ul class="cards__list">
+          {cards.map(({ label, src }) => (
+            <li>
+              <a href={src}>
+                <img src={src} alt="" width="1200" height="630" loading="lazy" />
+              </a>
+              <p>{label}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .cards__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr));
+    gap: var(--space-8);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cards__list img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: var(--rule);
+    border-radius: var(--radius);
+  }
+
+  .cards__list p {
+    margin: var(--space-2) 0 0;
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+  }
+</style>

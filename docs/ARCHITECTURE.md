@@ -15,21 +15,21 @@
 
 ## Stack
 
-| Concern | Choice | Notes |
-| --- | --- | --- |
-| Site framework | Astro 7 | Content collections, MDX, sitemap, RSS |
-| Interactive UI | Small bundled scripts; Vue 3 islands for the embed player | Vue loads only on posts with embeds |
-| Language | TypeScript | Strict mode |
-| Package manager | pnpm 10 (workspaces) | Supply-chain settings in `pnpm-workspace.yaml` |
-| Styling | Plain CSS + custom properties | Design tokens in `packages/ui` |
-| Search | Pagefind | Index built after `astro build`, runs in the browser, no server |
-| Social preview images | Satori + sharp | 1200×630 PNG per post, generated at build time |
-| Embeds | Click-to-load facades | See *Third-party embeds* |
-| Comments | giscus (GitHub Discussions), click-to-load | See *Comments* |
-| Hosting | Cloudflare Workers (static assets only) | `wrangler.jsonc`; see DEPLOYMENT.md |
-| Analytics | None in the page | Cloudflare's server-side request stats only |
-| Tests | Vitest | Includes WCAG contrast checks for the theme colours |
-| Lint / format | ESLint 10 + Prettier | Shared ESLint config in `packages/config` |
+| Concern               | Choice                                                    | Notes                                                           |
+| --------------------- | --------------------------------------------------------- | --------------------------------------------------------------- |
+| Site framework        | Astro 7                                                   | Content collections, MDX, sitemap, RSS                          |
+| Interactive UI        | Small bundled scripts; Vue 3 islands for the embed player | Vue loads only on posts with embeds                             |
+| Language              | TypeScript                                                | Strict mode                                                     |
+| Package manager       | pnpm 12 (workspaces)                                      | Supply-chain settings in `pnpm-workspace.yaml`                  |
+| Styling               | Plain CSS + custom properties                             | Design tokens in `packages/ui`                                  |
+| Search                | Pagefind                                                  | Index built after `astro build`, runs in the browser, no server |
+| Social preview images | Satori + sharp                                            | 1200×630 PNG per post, generated at build time                  |
+| Embeds                | Click-to-load facades                                     | See _Third-party embeds_                                        |
+| Comments              | giscus (GitHub Discussions), click-to-load                | See _Comments_                                                  |
+| Hosting               | Cloudflare Workers (static assets only)                   | `wrangler.jsonc`; see DEPLOYMENT.md                             |
+| Analytics             | None in the page                                          | Cloudflare's server-side request stats only                     |
+| Tests                 | Vitest                                                    | Includes WCAG contrast checks for the theme colours             |
+| Lint / format         | ESLint 10 + Prettier                                      | Shared ESLint config in `packages/config`                       |
 
 ## Repository layout
 
@@ -40,10 +40,11 @@ LemminiCouncil/
 │       ├── public/
 │       │   ├── _headers          # security headers and caching (Cloudflare)
 │       │   ├── .well-known/security.txt
-│       │   ├── humans.txt, robots.txt, favicon.svg
+│       │   ├── humans.txt, robots.txt, favicon.ico, icon-192.png, apple-touch-icon.png
 │       │   ├── giscus/           # comment themes (night.css, day.css)
 │       │   └── scripts/          # theme-init.js, search-init.js (CSP-friendly, no inline scripts)
 │       ├── src/
+│       │   ├── assets/brand/     # the logo (seal.png, seal-compact.png)
 │       │   ├── content/posts/    # Markdown / MDX posts
 │       │   ├── components/       # header, footer, post lists, series nav, comments, easter eggs
 │       │   ├── layouts/          # BaseLayout (head, meta, CSP-safe scripts), PostLayout
@@ -67,10 +68,10 @@ Future projects go in `apps/<project>/` when they are needed, not before.
 
 ## Domains and hosting
 
-| App | Domain | Cloudflare Worker |
-| --- | --- | --- |
-| `apps/council` | `lemminicouncil.org` (+ `www` redirected to it) | `lemmini-council` |
-| `apps/<project>` | `<project>.lemminicouncil.org` | `<project>` |
+| App              | Domain                                          | Cloudflare Worker |
+| ---------------- | ----------------------------------------------- | ----------------- |
+| `apps/council`   | `lemminicouncil.org` (+ `www` redirected to it) | `lemmini-council` |
+| `apps/<project>` | `<project>.lemminicouncil.org`                  | `<project>`       |
 
 - DNS lives in Cloudflare. Custom domains are declared in each app's `wrangler.jsonc`.
 - Every push to `main` builds and deploys. Other branches aren't built or deployed.
@@ -123,14 +124,14 @@ Give posts the same `series` name (and optionally `seriesOrder: 1`, `2`, …) an
 
 Kept small on purpose, and all served from this site:
 
-| Script | Where | What it does |
-| --- | --- | --- |
+| Script                         | Where                    | What it does                                       |
+| ------------------------------ | ------------------------ | -------------------------------------------------- |
 | `public/scripts/theme-init.js` | every page, before paint | applies a saved day theme (page and `theme-color`) |
-| ThemeToggle (bundled) | every page | the night/day button; also updates `theme-color` |
-| EasterEggs (bundled) | every page | console greeting, Konami code |
-| Comments (bundled) | posts | builds the giscus frame after a click |
-| Vue + ClickToLoad island | posts with embeds | swaps in the player after a click |
-| Pagefind + `search-init.js` | `/search/` | the search box |
+| ThemeToggle (bundled)          | every page               | the night/day button; also updates `theme-color`   |
+| EasterEggs (bundled)           | every page               | console greeting, Konami code                      |
+| Comments (bundled)             | posts                    | builds the giscus frame after a click              |
+| Vue + ClickToLoad island       | posts with embeds        | swaps in the player after a click                  |
+| Pagefind + `search-init.js`    | `/search/`               | the search box                                     |
 
 ## Third-party embeds (YouTube, Spotify)
 
@@ -235,7 +236,7 @@ Don't put post images in `public/`: those are served as they are, without resizi
   frames only from YouTube's privacy-mode domain, Spotify and giscus; inline style attributes allowed
   (code highlighting, embed sizing), inline scripts not. `frame-ancestors` and HSTS are headers in
   `public/_headers`.
-- **Supply chain:** see DEPLOYMENT.md → *Dependencies and supply chain*.
+- **Supply chain:** see DEPLOYMENT.md → _Dependencies and supply chain_.
 
 ## Easter eggs
 

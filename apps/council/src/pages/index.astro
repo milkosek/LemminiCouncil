@@ -1,5 +1,6 @@
 ---
 import PostList from '../components/PostList.astro';
+import Seal from '../components/Seal.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedPosts } from '../lib/posts';
 import { site } from '../site.config';
@@ -9,6 +10,7 @@ const posts = (await getPublishedPosts()).slice(0, 5);
 
 <BaseLayout>
   <section class="hero breakout">
+    <Seal class="hero__seal" sizes="(min-width: 40rem) 11rem, 8rem" priority />
     <p class="eyebrow">The Council is in session</p>
     <h1 class="hero__title">{site.tagline}</h1>
     <p class="lede">{site.description}</p>
@@ -17,19 +19,30 @@ const posts = (await getPublishedPosts()).slice(0, 5);
   <h2 class="section-rule">Latest</h2>
   <PostList posts={posts} />
 
-  {
-    posts.length > 0 && (
-      <p class="more">
-        <a href="/posts/">All posts →</a>
-      </p>
-    )
-  }
+  {posts.length > 0 && (
+    <p class="more">
+      <a href="/posts/">All posts →</a>
+    </p>
+  )}
 </BaseLayout>
 
 <style>
   .hero {
     padding: var(--space-8) 0 var(--space-4);
     text-align: center;
+  }
+
+  .hero__seal {
+    display: block;
+    width: 8rem;
+    height: auto;
+    margin: 0 auto var(--space-6);
+  }
+
+  @media (min-width: 40rem) {
+    .hero__seal {
+      width: 11rem;
+    }
   }
 
   .hero__title {

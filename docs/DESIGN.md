@@ -10,10 +10,10 @@ humour, but the words do the work.
 
 **Dark is the default.**
 
-| Theme | Name | When |
-| --- | --- | --- |
-| Dark | **The Chamber at Night** | Default for every visitor |
-| Light | The Chamber by Day | Opt-in via the theme toggle |
+| Theme | Name                     | When                        |
+| ----- | ------------------------ | --------------------------- |
+| Dark  | **The Chamber at Night** | Default for every visitor   |
+| Light | The Chamber by Day       | Opt-in via the theme toggle |
 
 - The toggle remembers the visitor's choice (local storage, no cookie).
 - The site starts in dark mode, regardless of the OS setting, until the visitor chooses otherwise.
@@ -31,16 +31,16 @@ meets WCAG AA (4.5:1) against `--bg` in its theme. Unit tests
 (`packages/ui/src/styles/tokens.test.ts`) check every text/background pair in both themes, and the
 build runs them before every deploy.
 
-| Token | Night (default) | Day | Role |
-| --- | --- | --- | --- |
-| `--bg` | `#14110f` deep ink-brown | `#f4ecdc` parchment | Page background |
-| `--surface` | `#1d1915` | `#ebe1cc` | Cards, code blocks |
-| `--text` | `#e9e1d0` candle-lit parchment | `#1e1a16` ink | Body text (14.5:1 / 14.7:1) |
-| `--text-muted` | `#a39a88` | `#5c544a` | Meta, captions (6.8:1 / 6.3:1) |
-| `--accent` | `#d65a52` wax-seal red | `#9e2b25` | Links, highlights, seals (4.9:1 / 6.3:1) |
-| `--on-accent` | `#14110f` | `#ffffff` | Text on accent-coloured buttons |
-| `--brass` | `#c9a45c` | `#76591f` | Rules, ornaments, focus rings, small labels (8.0:1 / 5.6:1) |
-| `--border` | `#2e2822` | `#d6c8ab` | Dividers |
+| Token          | Night (default)                | Day                 | Role                                                        |
+| -------------- | ------------------------------ | ------------------- | ----------------------------------------------------------- |
+| `--bg`         | `#14110f` deep ink-brown       | `#f4ecdc` parchment | Page background                                             |
+| `--surface`    | `#1d1915`                      | `#ebe1cc`           | Cards, code blocks                                          |
+| `--text`       | `#e9e1d0` candle-lit parchment | `#1e1a16` ink       | Body text (14.5:1 / 14.7:1)                                 |
+| `--text-muted` | `#a39a88`                      | `#5c544a`           | Meta, captions (6.8:1 / 6.3:1)                              |
+| `--accent`     | `#d65a52` wax-seal red         | `#9e2b25`           | Links, highlights, seals (4.9:1 / 6.3:1)                    |
+| `--on-accent`  | `#14110f`                      | `#ffffff`           | Text on accent-coloured buttons                             |
+| `--brass`      | `#c9a45c`                      | `#76591f`           | Rules, ornaments, focus rings, small labels (8.0:1 / 5.6:1) |
+| `--border`     | `#2e2822`                      | `#d6c8ab`           | Dividers                                                    |
 
 There should be one accent colour (wax-seal red), used sparingly. Brass is for ornaments and small
 labels, never body text.
@@ -49,12 +49,12 @@ labels, never body text.
 
 All fonts are self-hosted through Fontsource packages, so no request ever goes to a font CDN.
 
-| Role | Font | Notes |
-| --- | --- | --- |
-| Headings | Cormorant Garamond (600, 700) | High-contrast serif with a "proclamation" feel |
-| Body | Source Serif 4 (variable) | Text serif, 18px on phones to 21px on wide screens |
-| UI and meta | System sans-serif, often in small caps | Navigation, dates, labels |
-| Code | JetBrains Mono (variable) | Clear `0/O` and `1/l` distinction |
+| Role        | Font                                   | Notes                                              |
+| ----------- | -------------------------------------- | -------------------------------------------------- |
+| Headings    | Cormorant Garamond (600, 700)          | High-contrast serif with a "proclamation" feel     |
+| Body        | Source Serif 4 (variable)              | Text serif, 18px on phones to 21px on wide screens |
+| UI and meta | System sans-serif, often in small caps | Navigation, dates, labels                          |
+| Code        | JetBrains Mono (variable)              | Clear `0/O` and `1/l` distinction                  |
 
 Code blocks use the `rose-pine` Shiki theme in both modes.
 
@@ -66,12 +66,35 @@ Code blocks use the `rose-pine` Shiki theme in both modes.
 - The footer sits at the bottom of short pages and is pushed down by long ones.
 - External links get a small ↗ (hidden from screen readers) and open in the same tab.
 
+## Logo
+
+The Council seal: a gold blackletter "LC" on a red disc, in an ornate gold frame that breaks out of
+the circle. Its red is the day accent (`#9e2b25`). There are two versions, both in
+`apps/council/src/assets/brand/`:
+
+| File               | Version                                | Used for                                                                        |
+| ------------------ | -------------------------------------- | ------------------------------------------------------------------------------- |
+| `seal.png`         | Full seal (frame outside the disc)     | Header, home page, About, 404, the stamp beside a post's sign-off, social cards |
+| `seal-compact.png` | Frame inside the disc (a clean circle) | Favicons and app icons, where the full seal's detail is lost                    |
+
+- In pages, use `<Seal sizes="…" />` (`src/components/Seal.astro`, `variant="compact"` for the
+  circle): Astro turns the PNG into WebP at the sizes needed. It is decorative (empty alt) because the site name is always nearby.
+- Icons in `public/`: `favicon.ico` (16, 32, 48px) and `icon-192.png` from `seal-compact.png`;
+  `apple-touch-icon.png` (180px, iPhone/iPad home screen) from the full seal on the night
+  background, with room for iOS's rounded corners. Remake them if the artwork changes.
+- At the end of a post, `<SignOff>Overseer Mateusz</SignOff>` (usable in any MDX post without an
+  import) sets the signature with the seal stamped beside it, slightly askew. By day the stamp is
+  blended into the page like ink.
+
 ## Social preview cards
 
 Generated per post at build time (`apps/council/src/lib/og.ts`), 1200×630: wax-seal red bar on top,
-the "LC" seal and LEMMINI COUNCIL in brass, the title in Cormorant, the description in Source Serif,
-and a brass rule with the date and `lemminicouncil.org`. No artwork needed; the commissioned sprites
-can be added to the template later.
+LEMMINI COUNCIL in brass, the title in Cormorant and the description in Source Serif with the seal on
+the right, and a brass rule with the date and `lemminicouncil.org`.
+
+In `pnpm dev`, **`/dev/cards/`** shows every card at once: the site card, each post's (drafts
+included) and a few edge cases (very long title, no description, accented letters) from
+`src/lib/og-samples.ts`. The page and the samples exist only in dev and are never deployed.
 
 ## Motifs
 

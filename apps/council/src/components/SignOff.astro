@@ -1,0 +1,43 @@
+---
+/**
+ * Signature at the end of a post, with the Council's seal stamped beside it.
+ *
+ * Available in every MDX post without an import:
+ *   <SignOff>Overseer Mateusz</SignOff>
+ */
+import Seal from './Seal.astro';
+---
+
+<div class="sign-off">
+  <p class="sign-off__name">
+    <slot />
+  </p>
+  <Seal class="sign-off__stamp" sizes="6.5rem" />
+</div>
+
+<style>
+  .sign-off {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+  }
+
+  .sign-off__name {
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* Pressed on slightly askew, like a real stamp. */
+  .sign-off__stamp {
+    width: 6.5rem;
+    height: auto;
+    border-radius: 0;
+    transform: rotate(-12deg);
+  }
+
+  /* By day the page is paper: let the seal sit in it like ink. */
+  :global([data-theme='day']) .sign-off__stamp {
+    mix-blend-mode: multiply;
+  }
+</style>

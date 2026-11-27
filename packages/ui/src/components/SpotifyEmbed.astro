@@ -67,7 +67,8 @@ const src = `https://open.spotify.com/embed${path}`;
 const SIZES = { compact: 152, large: 352 } as const;
 const isSingle = kind === 'track' || kind === 'episode';
 const requested = size ?? (isSingle ? 'compact' : 'large');
-let height = typeof requested === 'number' ? Math.max(152, Math.round(requested)) : SIZES[requested];
+let height =
+  typeof requested === 'number' ? Math.max(152, Math.round(requested)) : SIZES[requested];
 // Spotify's track/episode card stops at 352px; anything taller would just be empty space.
 if (isSingle) height = Math.min(height, SIZES.large);
 ---
@@ -81,9 +82,5 @@ if (isSingle) height = Math.min(height, SIZES.large);
   height={height}
   action="Load Spotify player"
 >
-  {
-    cover && (
-      <img src={cover.src} {...cover.attributes} alt="" loading="lazy" decoding="async" />
-    )
-  }
+  {cover && <img src={cover.src} {...cover.attributes} alt="" loading="lazy" decoding="async" />}
 </ClickToLoad>

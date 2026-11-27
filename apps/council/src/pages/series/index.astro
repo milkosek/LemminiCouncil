@@ -7,25 +7,23 @@ const allSeries = groupBySeries(await getPublishedPosts());
 
 <BaseLayout title="Series" description="Posts that belong together, read in order.">
   <h1>Series</h1>
-  {
-    allSeries.length === 0 ? (
-      <p class="empty-state">No series yet. The Council speaks in single sessions for now.</p>
-    ) : (
-      <ul class="series-index">
-        {allSeries.map((series) => (
-          <li>
-            <h2>
-              <a href={seriesUrl(series)}>{series.name}</a>
-            </h2>
-            <p>
-              {series.posts.length} {series.posts.length === 1 ? 'part' : 'parts'}, starting with
-              “{series.posts[0]?.data.title}”
-            </p>
-          </li>
-        ))}
-      </ul>
-    )
-  }
+  {allSeries.length === 0 ? (
+    <p class="empty-state">No series yet. The Council speaks in single sessions for now.</p>
+  ) : (
+    <ul class="series-index">
+      {allSeries.map((series) => (
+        <li>
+          <h2>
+            <a href={seriesUrl(series)}>{series.name}</a>
+          </h2>
+          <p>
+            {series.posts.length} {series.posts.length === 1 ? 'part' : 'parts'}, starting with “
+            {series.posts[0]?.data.title}”
+          </p>
+        </li>
+      ))}
+    </ul>
+  )}
 </BaseLayout>
 
 <style>

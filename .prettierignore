@@ -3,3 +3,7 @@ dist
 node_modules
 pnpm-lock.yaml
 docs/private
+
+# Posts are prose, written by hand. Prettier's MDX support only understands the old MDX 1 syntax,
+# so it could rewrite or break Astro's MDX.
+apps/council/src/content

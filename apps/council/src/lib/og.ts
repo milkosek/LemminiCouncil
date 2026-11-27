@@ -5,7 +5,7 @@
  * the result doesn't depend on fonts installed on the build machine). Sharp then converts that
  * SVG to a 1200×630 PNG, the size LinkedIn, Discord, Slack and others expect.
  *
- * When the commissioned artwork arrives, add it here and every card picks it up.
+ * Every card carries the Council seal (src/assets/brand/seal.png) on the right.
  */
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -16,6 +16,9 @@ export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
 const PADDING_X = 80;
 const CONTENT_WIDTH = OG_WIDTH - 2 * PADDING_X;
+const SEAL_WIDTH = 250;
+const SEAL_GAP = 48;
+const TEXT_WIDTH = CONTENT_WIDTH - SEAL_WIDTH - SEAL_GAP;
 
 /** Night palette, mirrored from packages/ui/src/styles/tokens.css. */
 const colors = {
@@ -25,7 +28,6 @@ const colors = {
   accent: '#d65a52',
   seal: '#9e2b25',
   brass: '#c9a45c',
-  parchment: '#f4ecdc',
 };
 
 type Font = SatoriOptions['fonts'][number];
@@ -74,10 +76,34 @@ function loadFonts(): Promise<Font[]> {
   return fontsPromise;
 }
 
+let sealPromise: Promise<{ src: string; width: number; height: number }> | undefined;
+
+/** The seal as a PNG data URL, at twice the size it's drawn so it stays crisp. */
+function loadSeal() {
+  sealPromise ??= (async () => {
+    const { data, info } = await sharp(join(process.cwd(), 'src', 'assets', 'brand', 'seal.png'))
+      .resize({ width: SEAL_WIDTH * 2 })
+      .png()
+      .toBuffer({ resolveWithObject: true });
+    return {
+      src: `data:image/png;base64,${data.toString('base64')}`,
+      width: SEAL_WIDTH,
+      height: Math.round((info.height / info.width) * SEAL_WIDTH),
+    };
+  })();
+  return sealPromise;
+}
+
 type Child = Element | string;
 interface Element {
   type: string;
-  props: { style?: Record<string, string | number>; children?: Child | Child[] };
+  props: {
+    style?: Record<string, string | number>;
+    children?: Child | Child[];
+    src?: string;
+    width?: number;
+    height?: number;
+  };
 }
 
 /** Tiny helper so the layout below reads like markup. Satori needs display:flex on containers. */
@@ -109,7 +135,8 @@ export async function renderCard({
 }: CardContent): Promise<Uint8Array> {
   const display = 'Cormorant, CormorantExt, serif';
   const body = 'SourceSerif, SourceSerifExt, serif';
-  const titleSize = title.length > 60 ? 58 : title.length > 36 ? 68 : 80;
+  const titleSize = title.length > 60 ? 52 : title.length > 36 ? 60 : 72;
+  const seal = await loadSeal();
 
   const tree = el(
     {
@@ -125,44 +152,30 @@ export async function renderCard({
       color: colors.text,
       fontFamily: body,
     },
-    // Masthead: seal + name
+    // Masthead
     el(
-      { alignItems: 'center', gap: '22px' },
-      el(
-        {
-          width: '64px',
-          height: '64px',
-          borderRadius: '50%',
-          backgroundColor: colors.seal,
-          border: `2px solid ${colors.brass}`,
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: colors.parchment,
-          fontFamily: display,
-          fontSize: '30px',
-        },
-        'LC',
-      ),
-      el(
-        { fontFamily: display, fontSize: '34px', color: colors.brass, letterSpacing: '0.12em' },
-        'LEMMINI COUNCIL',
-      ),
+      { fontFamily: display, fontSize: '34px', color: colors.brass, letterSpacing: '0.12em' },
+      'LEMMINI COUNCIL',
     ),
-    // Title + description
+    // Title + description, with the seal on the right
     el(
-      { flexDirection: 'column', gap: '24px', width: `${CONTENT_WIDTH}px` },
+      { alignItems: 'center', justifyContent: 'space-between', width: `${CONTENT_WIDTH}px` },
       el(
-        { fontFamily: display, fontSize: `${titleSize}px`, lineHeight: 1.08, color: colors.text },
-        truncate(title, 110),
+        { flexDirection: 'column', gap: '22px', width: `${TEXT_WIDTH}px` },
+        el(
+          { fontFamily: display, fontSize: `${titleSize}px`, lineHeight: 1.08, color: colors.text },
+          truncate(title, 100),
+        ),
+        ...(description
+          ? [
+              el(
+                { fontSize: '26px', lineHeight: 1.4, color: colors.muted },
+                truncate(description, 140),
+              ),
+            ]
+          : []),
       ),
-      ...(description
-        ? [
-            el(
-              { fontSize: '30px', lineHeight: 1.4, color: colors.muted },
-              truncate(description, 150),
-            ),
-          ]
-        : []),
+      { type: 'img', props: { src: seal.src, width: seal.width, height: seal.height } },
     ),
     // Footer line
     el(

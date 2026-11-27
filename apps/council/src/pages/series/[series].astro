@@ -25,29 +25,29 @@ const description = `A ${series.posts.length}-part series on the Lemmini Council
 ---
 
 <BaseLayout title={series.name} description={description}>
-  <p class="eyebrow"><a href="/series/">Series</a></p>
+  <p class="eyebrow">
+    <a href="/series/">Series</a>
+  </p>
   <h1>{series.name}</h1>
   <p class="lede">{description} Read in order.</p>
 
   <ol class="parts">
-    {
-      series.posts.map((post, index) => (
-        <li class="part">
-          <span class="part__number" aria-hidden="true">
-            {index + 1}
-          </span>
-          <div>
-            <h2 class="part__title">
-              <a href={postUrl(post)}>{post.data.title}</a>
-            </h2>
-            <p class="part__meta">
-              <FormattedDate date={post.data.published} /> · {readingTime(post)} min read
-            </p>
-            <p class="part__description">{post.data.description}</p>
-          </div>
-        </li>
-      ))
-    }
+    {series.posts.map((post, index) => (
+      <li class="part">
+        <span class="part__number" aria-hidden="true">
+          {index + 1}
+        </span>
+        <div>
+          <h2 class="part__title">
+            <a href={postUrl(post)}>{post.data.title}</a>
+          </h2>
+          <p class="part__meta">
+            <FormattedDate date={post.data.published} /> · {readingTime(post)} min read
+          </p>
+          <p class="part__description">{post.data.description}</p>
+        </div>
+      </li>
+    ))}
   </ol>
 </BaseLayout>
 

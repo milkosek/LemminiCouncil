@@ -1,6 +1,7 @@
 ---
 import ThemeToggle from '@lemmini/ui/components/ThemeToggle.astro';
 import { getPublishedPosts, groupBySeries } from '../lib/posts';
+import Seal from './Seal.astro';
 import { nav as baseNav, site } from '../site.config';
 
 // "Series" appears in the menu only once at least one series exists.
@@ -16,21 +17,19 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
 <header class="site-header">
   <div class="site-header__inner">
     <a class="brand" href="/" aria-label={`${site.title}, home`}>
-      <img class="brand__seal" src="/favicon.svg" alt="" width="32" height="32" />
+      <Seal class="brand__seal" sizes="2.75rem" eager />
       <span class="brand__name">{site.title}</span>
     </a>
 
     <nav aria-label="Main">
       <ul class="site-nav">
-        {
-          nav.map((item) => (
-            <li>
-              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
+        {nav.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
       </ul>
     </nav>
 
@@ -60,6 +59,11 @@ const isCurrent = (href: string) => path === href || path.startsWith(href);
     margin-right: auto;
     color: var(--text);
     text-decoration: none;
+  }
+
+  .brand__seal {
+    width: 2.75rem;
+    height: auto;
   }
 
   .brand__name {

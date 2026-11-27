@@ -1,5 +1,6 @@
 ---
 import { render } from 'astro:content';
+import SignOff from '../../components/SignOff.astro';
 import PostLayout from '../../layouts/PostLayout.astro';
 import { getPublishedPosts, type Post } from '../../lib/posts';
 
@@ -20,5 +21,6 @@ const { Content } = await render(post);
 ---
 
 <PostLayout post={post}>
-  <Content />
+  {/* Components every MDX post can use without importing them. */}
+  <Content components={{ SignOff }} />
 </PostLayout>

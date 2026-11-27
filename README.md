@@ -31,8 +31,9 @@ The site follows its own advice: no trackers, no dark patterns, and it reads fin
 
 ## Getting started
 
-You need Node 26 (see `.nvmrc`; any even-numbered version from 22.23.4 works) and pnpm 10.
-Node 25+ no longer ships Corepack, so install pnpm with `npm install -g pnpm@10`. Windows, macOS and Linux all work.
+You need Node 26 (see `.nvmrc`; any even-numbered version from 22.23.4 works) and pnpm 12.
+Node 25+ no longer ships Corepack, so install pnpm with `npm install -g pnpm@latest-12`. Inside the
+repo, pnpm switches to the exact version in `packageManager` (root `package.json`). Windows, macOS and Linux all work.
 
 ```sh
 pnpm install

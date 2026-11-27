@@ -67,17 +67,15 @@ const href = `https://www.youtube.com/watch?v=${encodeURIComponent(id)}${start ?
 ---
 
 <ClickToLoad client:visible provider="YouTube" src={src} title={title} href={href}>
-  {
-    thumbnail && (
-      <img
-        src={thumbnail.src}
-        srcset={thumbnail.srcSet.attribute || undefined}
-        sizes={thumbnail.srcSet.attribute ? sizes : undefined}
-        {...thumbnail.attributes}
-        alt=""
-        loading="lazy"
-        decoding="async"
-      />
-    )
-  }
+  {thumbnail && (
+    <img
+      src={thumbnail.src}
+      srcset={thumbnail.srcSet.attribute || undefined}
+      sizes={thumbnail.srcSet.attribute ? sizes : undefined}
+      {...thumbnail.attributes}
+      alt=""
+      loading="lazy"
+      decoding="async"
+    />
+  )}
 </ClickToLoad>
